@@ -19,5 +19,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Flow of Time"
+rootProject.name = "Compose clean arch multimodule example"
 include(":app")
+include(":presentation")
+include(":data")
+include(":domain")

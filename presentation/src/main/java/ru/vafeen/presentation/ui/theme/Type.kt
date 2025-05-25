@@ -1,4 +1,4 @@
-package ru.vafeen.flowoftime.ui.theme
+package ru.vafeen.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

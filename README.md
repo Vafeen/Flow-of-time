@@ -1,3 +1,16 @@
+# Compose clean arch multimodule example 
+
+## Modules schema:
+
+```mermaid 
+graph TD
+:domain --> :data
+:domain --> :presentation 
+:data --> :app 
+:presentation --> :app 
+```
+## Modules implementation:
+```kotlin
 [versions]
 agp = "8.12.0-alpha02"
 kotlin = "2.1.21"
@@ -43,3 +56,53 @@ compose = ["androidx-ui",
     "androidx-material3",
     "androidx-activity-compose"]
 compose-debug = ["androidx-ui-tooling", "androidx-ui-test-manifest"]
+```
+
+`:domain`:
+```kotlin 
+    api(libs.bundles.core)
+
+    // Tests
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+```
+
+`:data`:
+```kotlin
+    api(project(":domain"))
+    // Tests
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    // other libs
+```
+
+`:presentation`:
+```kotlin
+    api(project(":domain"))
+    // Compose
+    api(platform(libs.androidx.compose.bom))
+    api(libs.bundles.compose)
+
+    // Compose tests
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+    debugImplementation(libs.bundles.compose.debug)
+
+    // Tests
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+```
+
+`:app`:
+```kotlin
+    implementation(project(":presentation"))
+    implementation(project(":data"))
+    
+    // Tests
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+```

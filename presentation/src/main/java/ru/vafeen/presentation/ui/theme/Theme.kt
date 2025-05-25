@@ -1,4 +1,4 @@
-package ru.vafeen.flowoftime.ui.theme
+package ru.vafeen.presentation.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -33,7 +33,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun FlowOfTimeTheme(
+fun ComposeCleanArchMultimoduleExampleTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
