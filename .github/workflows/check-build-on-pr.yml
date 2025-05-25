@@ -5,7 +5,7 @@ on:
     branches: [ main ]  # Замените на вашу основную ветку
 
 jobs:
-  build:
+  build-and-verify-apk-in-pr:
     runs-on: ubuntu-latest
     
     steps:
