@@ -1,4 +1,4 @@
-package ru.vafeen.flowoftime
+package ru.vafeen.presentation
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("ru.vafeen.composecleanarchmultimoduleexample", appContext.packageName)
+        assertEquals("ru.vafeen.presentation.test", appContext.packageName)
     }
 }

@@ -1,21 +1,17 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "ru.vafeen.flowoftime"
+    namespace = "ru.vafeen.domain"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "ru.vafeen.flowoftime"
         minSdk = 26
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -34,14 +30,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
-    implementation(project(":presentation"))
-    implementation(project(":data"))
+    api(libs.bundles.core)
 
     // Tests
     testImplementation(libs.junit)

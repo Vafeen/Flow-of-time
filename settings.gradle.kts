@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Flow of Time"
 include(":app")
+include(":presentation")
+include(":data")
+include(":domain")
