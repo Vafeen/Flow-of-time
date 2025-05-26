@@ -2,6 +2,9 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.org.jetbrains.kotlin.kapt)
+    alias(libs.plugins.hilt.android)
+    kotlin("plugin.serialization") version "2.1.0"
 }
 
 android {
@@ -48,4 +51,14 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // navigation3
+    implementation("androidx.navigation:navigation-compose:2.8.5")
+    // hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+    // hilt viewModel
+    implementation(libs.androidx.hilt.navigation.compose)
+    //serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
 }
