@@ -14,12 +14,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import ru.vafeen.presentation.R
 import ru.vafeen.presentation.common.Screen
 import ru.vafeen.presentation.common.components.bottom_bar.BottomBar
 import ru.vafeen.presentation.common.components.bottom_bar.BottomBarItem
 import ru.vafeen.presentation.common.getScreenFromRoute
+import ru.vafeen.presentation.stop_watch.StopWatchDataScreen
 import ru.vafeen.presentation.stopwatches.StopwatchesScreen
+import ru.vafeen.presentation.timer_data.TimerDataScreen
 import ru.vafeen.presentation.timers.TimersScreen
 
 @Composable
@@ -74,13 +77,26 @@ internal fun NavRoot() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-            navController = navController, startDestination = state.startScreen
+            navController = navController,
+            startDestination = state.startScreen
         ) {
             composable<Screen.Timers> {
                 TimersScreen(sendRootIntent = viewModel::handleIntent)
             }
             composable<Screen.Stopwatches> {
                 StopwatchesScreen(sendRootIntent = viewModel::handleIntent)
+            }
+            composable<Screen.StopwatchData> {
+                StopWatchDataScreen(
+                    sendRootIntent = viewModel::handleIntent,
+                    stopwatchData = it.toRoute()
+                )
+            }
+            composable<Screen.TimerData> {
+                TimerDataScreen(
+                    sendRootIntent = viewModel::handleIntent,
+                    timerData = it.toRoute()
+                )
             }
         }
     }

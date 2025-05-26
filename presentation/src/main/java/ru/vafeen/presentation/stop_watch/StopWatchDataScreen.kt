@@ -1,20 +1,20 @@
-package ru.vafeen.presentation.stopwatches
+package ru.vafeen.presentation.stop_watch
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import ru.vafeen.presentation.common.Screen
 import ru.vafeen.presentation.navigation.NavRootIntent
 
+
 @Composable
-internal fun StopwatchesScreen(sendRootIntent: (NavRootIntent) -> Unit) {
+internal fun StopWatchDataScreen(
+    sendRootIntent: (NavRootIntent) -> Unit,
+    stopwatchData: Screen.StopwatchData
+) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Text("stop watchers")
-        Button(onClick = { sendRootIntent(NavRootIntent.NavigateToScreen(Screen.StopwatchData(name = "Vafeen's stopwatch"))) }) {
-            Text("navigate to some stopwatch")
-        }
+        Text("time ${stopwatchData.name}")
     }
 }
