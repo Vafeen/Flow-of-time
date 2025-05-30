@@ -2,6 +2,13 @@ package ru.vafeen.domain.domain_models
 
 import java.time.LocalDateTime
 
+/**
+ * Модель доменного слоя, представляющая таймер.
+ *
+ * @property id Уникальный идентификатор таймера.
+ * @property ldt Временная метка (LocalDateTime), связанная с таймером (например, время создания или обновления).
+ * @property name Название или описание таймера.
+ */
 data class Timer(
     val id: Int,
     val ldt: LocalDateTime,
