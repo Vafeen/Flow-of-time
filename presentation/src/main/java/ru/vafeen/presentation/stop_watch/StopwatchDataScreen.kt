@@ -10,7 +10,7 @@ import ru.vafeen.presentation.navigation.NavRootIntent
 
 
 @Composable
-internal fun StopWatchDataScreen(
+internal fun StopwatchDataScreen(
     sendRootIntent: (NavRootIntent) -> Unit,
     stopwatchData: Screen.StopwatchData
 ) {
