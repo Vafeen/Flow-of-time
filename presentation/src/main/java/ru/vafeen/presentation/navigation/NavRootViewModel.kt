@@ -8,19 +8,52 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
+import ru.vafeen.domain.database.StopwatchRepository
+import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.utils.launchIO
 import ru.vafeen.presentation.common.Screen
 import ru.vafeen.presentation.common.screenWithBottomBar
 import javax.inject.Inject
 
-
+/**
+ * ViewModel для управления навигацией в корневом компоненте приложения.
+ *
+ * Обрабатывает навигационные интенты ([NavRootIntent]), обновляет состояние навигации ([NavRootState])
+ * и испускает эффекты навигации ([NavRootEffect]) для выполнения переходов.
+ */
 @HiltViewModel
-internal class NavRootViewModel @Inject constructor() : ViewModel() {
+internal class NavRootViewModel @Inject constructor(
+    private val stopwatchRepository: StopwatchRepository
+) : ViewModel() {
+    init {
+        viewModelScope.launchIO {
+
+            stopwatchRepository.insert(
+                stopwatchRepository.getById(1).first() ?: Stopwatch(
+                    id = 0,
+                    startTime = System.currentTimeMillis(),
+                    stopTime = System.currentTimeMillis() + 1000,
+                    name = "test",
+                )
+            )
+        }
+    }
+
+    // Поток эффектов навигации для подписчиков (например, UI)
     private val _effects = MutableSharedFlow<NavRootEffect>()
     val effects = _effects.asSharedFlow()
+
+    // Состояние навигации, доступное для подписки
     private val _state = MutableStateFlow(NavRootState(startScreen = Screen.Stopwatches))
     val state = _state.asStateFlow()
+
+    /**
+     * Обработка навигационных интентов.
+     *
+     * @param intent Навигационное намерение для обработки.
+     */
     fun handleIntent(intent: NavRootIntent) {
         viewModelScope.launchIO {
             when (intent) {
@@ -33,6 +66,11 @@ internal class NavRootViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    /**
+     * Навигация на произвольный экран.
+     *
+     * @param screen Целевой экран для навигации.
+     */
     private suspend fun navigateToScreen(screen: Screen) {
         _effects.emit(NavRootEffect.NavigateToScreen { navHostController ->
             navHostController.navigate(screen) {
@@ -44,6 +82,11 @@ internal class NavRootViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    /**
+     * Навигация на экран нижней панели с очисткой стека до стартового экрана.
+     *
+     * @param screen Целевой экран для навигации.
+     */
     private suspend fun navigateToBottomBarScreen(screen: Screen) {
         _effects.emit(
             NavRootEffect.NavigateToScreen { navHostController ->
@@ -58,6 +101,8 @@ internal class NavRootViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    /**
+     * Выполнить действие возврата назад в навигации.
+     */
     private suspend fun back() = _effects.emit(NavRootEffect.Back)
-
 }

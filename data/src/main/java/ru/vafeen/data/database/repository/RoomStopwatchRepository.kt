@@ -9,18 +9,45 @@ import ru.vafeen.domain.database.StopwatchRepository
 import ru.vafeen.domain.domain_models.Stopwatch
 import javax.inject.Inject
 
-internal class RoomStopwatchRepository @Inject constructor(private val stopwatchDao: StopwatchDao) :
-    StopwatchRepository {
-    override fun getAll(): Flow<List<Stopwatch>> = stopwatchDao.getAll().map {
-        it.map { entity ->
+/**
+ * Репозиторий для работы с секундомерами, реализующий интерфейс [StopwatchRepository].
+ *
+ * Использует DAO [StopwatchDao] для взаимодействия с базой данных Room.
+ *
+ * @property stopwatchDao DAO для доступа к данным секундомеров.
+ */
+internal class RoomStopwatchRepository @Inject constructor(
+    private val stopwatchDao: StopwatchDao
+) : StopwatchRepository {
+
+    /**
+     * Получить поток всех секундомеров из базы данных.
+     *
+     * @return [Flow] со списком моделей секундомеров [Stopwatch].
+     */
+    override fun getAll(): Flow<List<Stopwatch>> = stopwatchDao.getAll().map { entities ->
+        entities.map { entity ->
             entity.toStopWatch()
         }
     }
 
-    override fun insert(stopwatch: Stopwatch) =
+    /**
+     * Вставить новый секундомер в базу данных.
+     *
+     * @param stopwatch Модель секундомера для вставки.
+     */
+    override suspend fun insert(stopwatch: Stopwatch) =
         stopwatchDao.insert(stopwatchEntity = stopwatch.toStopWatchEntity())
 
-    override fun delete(stopwatch: Stopwatch) =
+    /**
+     * Удалить секундомер из базы данных.
+     *
+     * @param stopwatch Модель секундомера для удаления.
+     */
+    override suspend fun delete(stopwatch: Stopwatch) =
         stopwatchDao.delete(stopwatchEntity = stopwatch.toStopWatchEntity())
 
+    override suspend fun getById(id: Int): Flow<Stopwatch?> = stopwatchDao.getById(id).map {
+        it?.toStopWatch()
+    }
 }

@@ -8,14 +8,37 @@ import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 import ru.vafeen.data.database.entity.TimerEntity
 
+/**
+ * DAO-интерфейс для работы с сущностями таймеров в базе данных Room.
+ *
+ * Предоставляет методы для получения, вставки и удаления таймеров.
+ */
 @Dao
 internal interface TimerDao {
-    @Query("select * from timers")
+
+    /**
+     * Получить поток со списком всех таймеров.
+     *
+     * @return [Flow] со списком всех [TimerEntity] из таблицы "timers".
+     */
+    @Query("SELECT * FROM timers")
     fun getAll(): Flow<List<TimerEntity>>
 
+    /**
+     * Вставить или обновить таймер в базе данных.
+     *
+     * При конфликте (например, совпадении id) существующая запись будет заменена.
+     *
+     * @param timerEntity Сущность таймера для вставки или обновления.
+     */
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(timerEntity: TimerEntity)
+    suspend fun insert(timerEntity: TimerEntity)
 
+    /**
+     * Удалить таймер из базы данных.
+     *
+     * @param timerEntity Сущность таймера для удаления.
+     */
     @Delete
-    fun delete(timerEntity: TimerEntity)
+    suspend fun delete(timerEntity: TimerEntity)
 }

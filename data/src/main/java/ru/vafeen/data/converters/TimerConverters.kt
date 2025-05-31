@@ -6,11 +6,13 @@ import ru.vafeen.domain.domain_models.Timer
 internal fun TimerEntity.toTimer() = Timer(
     id = id,
     ldt = ldt,
-    name = name
+    name = name,
+    isWork = isWork
 )
 
 internal fun Timer.toTimerEntity() = TimerEntity(
     id = id,
     ldt = ldt,
-    name = name
+    name = name,
+    isWork = isWork
 )

@@ -25,18 +25,27 @@ import ru.vafeen.presentation.stopwatches.StopwatchesScreen
 import ru.vafeen.presentation.timer_data.TimerDataScreen
 import ru.vafeen.presentation.timers.TimersScreen
 
+/**
+ * Корневой навигационный компонент приложения, реализованный с использованием Jetpack Compose Navigation.
+ *
+ * Отвечает за управление навигацией между экранами, отображение нижней навигационной панели (BottomBar),
+ * а также обработку эффектов и состояний навигации через ViewModel [NavRootViewModel].
+ */
 @Composable
 internal fun NavRoot() {
     val viewModel: NavRootViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
     val navController = rememberNavController()
+
+    // Отслеживание изменений в стеке навигации и обновление текущего экрана в ViewModel
     LaunchedEffect(null) {
-        navController.currentBackStackEntryFlow.collect {
-            val currentScreen = getScreenFromRoute(it)
-                ?: return@collect
+        navController.currentBackStackEntryFlow.collect { backStackEntry ->
+            val currentScreen = getScreenFromRoute(backStackEntry) ?: return@collect
             viewModel.handleIntent(NavRootIntent.UpdateCurrentScreen(currentScreen))
         }
     }
+
+    // Обработка эффектов навигации, исходящих из ViewModel
     LaunchedEffect(null) {
         viewModel.effects.collect { effect ->
             when (effect) {
@@ -50,19 +59,21 @@ internal fun NavRoot() {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            val bottomBarScreens: List<BottomBarItem> =
-                listOf(
-                    BottomBarItem(
-                        screen = Screen.Stopwatches,
-                        icon = painterResource(R.drawable.stop_watch),
-                        contentDescription = stringResource(R.string.stop_watch)
-                    ), BottomBarItem(
-                        screen = Screen.Timers,
-                        icon = painterResource(R.drawable.timer),
-                        contentDescription = stringResource(R.string.timer)
-                    )
+            // Определение элементов нижней навигационной панели
+            val bottomBarScreens: List<BottomBarItem> = listOf(
+                BottomBarItem(
+                    screen = Screen.Stopwatches,
+                    icon = painterResource(R.drawable.stop_watch),
+                    contentDescription = stringResource(R.string.stop_watch)
+                ),
+                BottomBarItem(
+                    screen = Screen.Timers,
+                    icon = painterResource(R.drawable.timer),
+                    contentDescription = stringResource(R.string.timer)
                 )
+            )
 
+            // Отображение BottomBar только на определённых экранах
             if (state.currentScreen in bottomBarScreens.map { it.screen }) {
                 BottomBar(
                     currentScreen = state.currentScreen,
@@ -72,7 +83,8 @@ internal fun NavRoot() {
                     }
                 )
             }
-        }) { paddingValues ->
+        }
+    ) { paddingValues ->
         NavHost(
             modifier = Modifier
                 .fillMaxSize()
@@ -80,6 +92,7 @@ internal fun NavRoot() {
             navController = navController,
             startDestination = state.startScreen
         ) {
+
             composable<Screen.Timers> {
                 TimersScreen(sendRootIntent = viewModel::handleIntent)
             }
