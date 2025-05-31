@@ -36,7 +36,7 @@ internal class RoomStopwatchRepository @Inject constructor(
      *
      * @param stopwatch Модель секундомера для вставки.
      */
-    override fun insert(stopwatch: Stopwatch) =
+    override suspend fun insert(stopwatch: Stopwatch) =
         stopwatchDao.insert(stopwatchEntity = stopwatch.toStopWatchEntity())
 
     /**
@@ -44,6 +44,10 @@ internal class RoomStopwatchRepository @Inject constructor(
      *
      * @param stopwatch Модель секундомера для удаления.
      */
-    override fun delete(stopwatch: Stopwatch) =
+    override suspend fun delete(stopwatch: Stopwatch) =
         stopwatchDao.delete(stopwatchEntity = stopwatch.toStopWatchEntity())
+
+    override suspend fun getById(id: Int): Flow<Stopwatch?> = stopwatchDao.getById(id).map {
+        it?.toStopWatch()
+    }
 }

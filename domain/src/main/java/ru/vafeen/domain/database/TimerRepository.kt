@@ -22,12 +22,12 @@ interface TimerRepository {
      *
      * @param timer Модель таймера для вставки.
      */
-    fun insert(timer: Timer)
+    suspend fun insert(timer: Timer)
 
     /**
      * Удалить таймер.
      *
      * @param timer Модель таймера для удаления.
      */
-    fun delete(timer: Timer)
+    suspend fun delete(timer: Timer)
 }

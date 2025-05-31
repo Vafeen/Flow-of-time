@@ -2,4 +2,6 @@
 <resources>
     <string name="stop_watch">Секундомер</string>
     <string name="timer">Таймер</string>
+    <string name="resume">Продолжить</string>
+    <string name="pause">Остановить</string>
 </resources>

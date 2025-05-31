@@ -6,7 +6,7 @@ import ru.vafeen.domain.domain_models.Stopwatch
 /**
  * Интерфейс репозитория для работы с секундомерами.
  *
- * Определяет набор операций для получения, добавления и удаления секундомеров.
+ * Определяет набор операций для получения, добавления, удаления и поиска секундомеров.
  */
 interface StopwatchRepository {
 
@@ -22,12 +22,20 @@ interface StopwatchRepository {
      *
      * @param stopwatch Модель секундомера для вставки.
      */
-    fun insert(stopwatch: Stopwatch)
+    suspend fun insert(stopwatch: Stopwatch)
 
     /**
      * Удалить секундомер.
      *
      * @param stopwatch Модель секундомера для удаления.
      */
-    fun delete(stopwatch: Stopwatch)
+    suspend fun delete(stopwatch: Stopwatch)
+
+    /**
+     * Получить секундомер по его уникальному идентификатору.
+     *
+     * @param id Идентификатор секундомера.
+     * @return Модель секундомера [Stopwatch], если найден, или null, если отсутствует.
+     */
+    suspend fun getById(id: Int): Flow<Stopwatch?>
 }

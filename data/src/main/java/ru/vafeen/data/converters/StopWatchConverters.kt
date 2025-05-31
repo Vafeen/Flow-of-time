@@ -5,12 +5,14 @@ import ru.vafeen.domain.domain_models.Stopwatch
 
 internal fun StopwatchEntity.toStopWatch() = Stopwatch(
     id = id,
-    ldt = ldt,
-    name = name
+    startTime = startTime,
+    name = name,
+    stopTime = stopTime,
 )
 
 internal fun Stopwatch.toStopWatchEntity() = StopwatchEntity(
     id = id,
-    ldt = ldt,
-    name = name
+    startTime = startTime,
+    name = name,
+    stopTime = stopTime
 )

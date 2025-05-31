@@ -34,12 +34,12 @@ internal class RoomTimerRepository @Inject constructor(
      *
      * @param timer Модель таймера для вставки.
      */
-    override fun insert(timer: Timer) = timerDao.insert(timer.toTimerEntity())
+    override suspend fun insert(timer: Timer) = timerDao.insert(timer.toTimerEntity())
 
     /**
      * Удалить таймер из базы данных.
      *
      * @param timer Модель таймера для удаления.
      */
-    override fun delete(timer: Timer) = timerDao.delete(timer.toTimerEntity())
+    override suspend fun delete(timer: Timer) = timerDao.delete(timer.toTimerEntity())
 }

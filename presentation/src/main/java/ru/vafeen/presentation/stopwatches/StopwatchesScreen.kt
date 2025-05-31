@@ -13,7 +13,7 @@ import ru.vafeen.presentation.navigation.NavRootIntent
 internal fun StopwatchesScreen(sendRootIntent: (NavRootIntent) -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         Text("stop watchers")
-        Button(onClick = { sendRootIntent(NavRootIntent.NavigateToScreen(Screen.StopwatchData(name = "Vafeen's stopwatch"))) }) {
+        Button(onClick = { sendRootIntent(NavRootIntent.NavigateToScreen(Screen.StopwatchData(id = 1))) }) {
             Text("navigate to some stopwatch")
         }
     }

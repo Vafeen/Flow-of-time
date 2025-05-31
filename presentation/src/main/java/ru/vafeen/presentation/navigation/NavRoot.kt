@@ -92,6 +92,7 @@ internal fun NavRoot() {
             navController = navController,
             startDestination = state.startScreen
         ) {
+
             composable<Screen.Timers> {
                 TimersScreen(sendRootIntent = viewModel::handleIntent)
             }
