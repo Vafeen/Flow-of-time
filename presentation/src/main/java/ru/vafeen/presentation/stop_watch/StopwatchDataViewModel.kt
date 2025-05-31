@@ -15,6 +15,12 @@ import kotlinx.coroutines.isActive
 import ru.vafeen.domain.database.StopwatchRepository
 import ru.vafeen.domain.utils.launchIO
 
+/**
+ * ViewModel для управления состоянием секундомера и взаимодействием с базой данных.
+ *
+ * @property id Идентификатор секундомера
+ * @property stopwatchRepository Репозиторий для работы с данными секундомера
+ */
 @HiltViewModel(assistedFactory = StopwatchDataViewModel.Factory::class)
 internal class StopwatchDataViewModel @AssistedInject constructor(
     @Assisted private val id: Int,
@@ -22,8 +28,16 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
 ) : ViewModel() {
     private val _state = MutableStateFlow(StopWatchDataState(timeNow = System.currentTimeMillis()))
     val state = _state.asStateFlow()
+
+    /**
+     * Job для обработки обновления в реальном времени
+     */
     private var realtimeUpdating: Job? = null
 
+    /**
+     * Обрабатывает пользовательские интенты для управления секундомером.
+     * @param intent Тип действия пользователя
+     */
     fun handleIntent(intent: StopwatchDataIntent) {
         viewModelScope.launchIO {
             when (intent) {
@@ -38,13 +52,16 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Переключает состояние секундомера (старт/пауза) и обновляет данные в БД.
+     */
     private suspend fun changeState() {
         val currentState = _state.value
         val stopwatch = currentState.stopWatch ?: return
         val now = System.currentTimeMillis()
         val stopTime = stopwatch.stopTime
         val updatedStopwatch = if (stopTime != null) {
-            // Запуск секундомера
+            // Запуск секундомера с учетом прошедшего времени
             val elapsed = stopTime - stopwatch.startTime
             stopwatch.copy(
                 startTime = now - elapsed,
@@ -52,9 +69,8 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
             ).apply {
                 _state.update { it.copy(stopWatch = this) }
             }
-
         } else {
-            // Остановка секундомера
+            // Остановка секундомера с фиксацией времени остановки
             stopwatch.copy(stopTime = now).apply {
                 _state.update { it.copy(stopWatch = this) }
             }
@@ -64,9 +80,13 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         updateTimerState(updatedStopwatch.stopTime == null)
     }
 
+    /**
+     * Инициализирует состояние секундомера из базы данных.
+     * При первом запуске добавляет искусственную задержку для демонстрации загрузки.
+     */
     private suspend fun initStopwatch() {
         _state.update { it.copy(isLoading = true) }
-        delay(2000)
+        delay(2000) // Искусственная задержка для демонстрации
         stopwatchRepository.getById(id).collect { stopwatch ->
             if (stopwatch != null) {
                 _state.update {
@@ -83,6 +103,10 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Управляет состоянием автоматического обновления таймера.
+     * @param shouldBeRunning Флаг, указывающий должен ли таймер обновляться
+     */
     private fun updateTimerState(shouldBeRunning: Boolean) {
         if (shouldBeRunning) {
             startUpdating()
@@ -91,6 +115,10 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Запускает периодическое обновление времени в UI.
+     * Обновления происходят каждую секунду до остановки.
+     */
     private fun startUpdating() {
         if (realtimeUpdating?.isActive == true) return
 
@@ -104,13 +132,23 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Останавливает обновление времени в UI.
+     */
     private fun stopUpdating() {
         realtimeUpdating?.cancel()
         realtimeUpdating = null
     }
 
+    /**
+     * Фабрика для создания экземпляра ViewModel с внедрением зависимостей.
+     */
     @AssistedFactory
     interface Factory {
+        /**
+         * Создает экземпляр ViewModel с заданным идентификатором.
+         * @param id Идентификатор секундомера
+         */
         fun create(@Assisted id: Int): StopwatchDataViewModel
     }
 }

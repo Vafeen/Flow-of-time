@@ -9,9 +9,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+/**
+ * Компонент отображения индикатора загрузки по центру экрана.
+ */
 @Composable
 fun CircularLoading() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
         CircularProgressIndicator(modifier = Modifier.size(50.dp))
     }
 }
