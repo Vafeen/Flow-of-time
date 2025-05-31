@@ -1,6 +1,5 @@
 package ru.vafeen.presentation.stop_watch
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
@@ -69,7 +68,6 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         _state.update { it.copy(isLoading = true) }
         delay(2000)
         stopwatchRepository.getById(id).collect { stopwatch ->
-            Log.d("StopwatchInit", "Received from DB: $stopwatch")
             if (stopwatch != null) {
                 _state.update {
                     it.copy(
