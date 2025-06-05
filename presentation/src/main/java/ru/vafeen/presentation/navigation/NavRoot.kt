@@ -1,5 +1,8 @@
 package ru.vafeen.presentation.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -20,6 +23,7 @@ import ru.vafeen.presentation.common.Screen
 import ru.vafeen.presentation.common.components.bottom_bar.BottomBar
 import ru.vafeen.presentation.common.components.bottom_bar.BottomBarItem
 import ru.vafeen.presentation.common.getScreenFromRoute
+import ru.vafeen.presentation.new_stopwatch.NewStopwatchDataScreen
 import ru.vafeen.presentation.stop_watch.StopwatchDataScreen
 import ru.vafeen.presentation.stopwatches.StopwatchesScreen
 import ru.vafeen.presentation.timer_data.TimerDataScreen
@@ -85,12 +89,17 @@ internal fun NavRoot() {
             }
         }
     ) { paddingValues ->
+        val tween = tween<Float>(durationMillis = 0)
         NavHost(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues),
             navController = navController,
-            startDestination = state.startScreen
+            startDestination = state.startScreen,
+            enterTransition = { fadeIn(animationSpec = tween) },
+            exitTransition = { fadeOut(animationSpec = tween) },
+            popEnterTransition = { fadeIn(animationSpec = tween) },
+            popExitTransition = { fadeOut(animationSpec = tween) },
         ) {
 
             composable<Screen.Timers> {
@@ -110,6 +119,9 @@ internal fun NavRoot() {
                     sendRootIntent = viewModel::handleIntent,
                     timerData = it.toRoute()
                 )
+            }
+            composable<Screen.NewStopWatchData> {
+                NewStopwatchDataScreen(sendRootIntent = viewModel::handleIntent)
             }
         }
     }

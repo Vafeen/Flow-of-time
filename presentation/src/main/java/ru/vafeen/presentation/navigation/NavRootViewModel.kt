@@ -1,17 +1,15 @@
 package ru.vafeen.presentation.navigation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import ru.vafeen.domain.database.StopwatchRepository
-import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.utils.launchIO
 import ru.vafeen.presentation.common.Screen
 import ru.vafeen.presentation.common.screenWithBottomBar
@@ -28,17 +26,25 @@ internal class NavRootViewModel @Inject constructor(
     private val stopwatchRepository: StopwatchRepository
 ) : ViewModel() {
     init {
-        // todo Delete after creating adding Stopwatch
-        viewModelScope.launchIO {
+//        // todo Delete after creating adding Stopwatch
+//        viewModelScope.launchIO {
+//
+//            stopwatchRepository.insert(
+//                stopwatchRepository.getById(1).first() ?: Stopwatch(
+//                    id = System.currentTimeMillis(),
+//                    startTime = System.currentTimeMillis(),
+//                    stopTime = System.currentTimeMillis() + 1000,
+//                    name = "test",
+//                )
+//            )
+//        }
+    }
 
-            stopwatchRepository.insert(
-                stopwatchRepository.getById(1).first() ?: Stopwatch(
-                    id = 0,
-                    startTime = System.currentTimeMillis(),
-                    stopTime = System.currentTimeMillis() + 1000,
-                    name = "test",
-                )
-            )
+    init {
+        viewModelScope.launchIO {
+            stopwatchRepository.getAll().collect { stopwatches ->
+                Log.e("stop", stopwatches.joinToString("\n"))
+            }
         }
     }
 
@@ -76,6 +82,7 @@ internal class NavRootViewModel @Inject constructor(
         _effects.emit(NavRootEffect.NavigateToScreen { navHostController ->
             navHostController.navigate(screen) {
                 launchSingleTop = true
+//                restoreState = false
             }
         })
         _state.update {
@@ -92,8 +99,9 @@ internal class NavRootViewModel @Inject constructor(
         _effects.emit(
             NavRootEffect.NavigateToScreen { navHostController ->
                 navHostController.navigate(screen) {
-                    popUpTo(navHostController.graph.findStartDestination().id)
+//                    popUpTo(navHostController.graph.findStartDestination().id)
                     launchSingleTop = true
+//                    restoreState = false
                 }
             }
         )

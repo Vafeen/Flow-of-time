@@ -1,10 +1,7 @@
-package ru.vafeen.presentation.stop_watch
+package ru.vafeen.presentation.new_stopwatch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -13,7 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import ru.vafeen.domain.database.StopwatchRepository
+import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.utils.launchIO
+import javax.inject.Inject
 
 /**
  * ViewModel для управления состоянием секундомера и взаимодействием с базой данных.
@@ -21,12 +20,16 @@ import ru.vafeen.domain.utils.launchIO
  * @property id Идентификатор секундомера
  * @property stopwatchRepository Репозиторий для работы с данными секундомера
  */
-@HiltViewModel(assistedFactory = StopwatchDataViewModel.Factory::class)
-internal class StopwatchDataViewModel @AssistedInject constructor(
-    @Assisted private val id: Long,
-    private val stopwatchRepository: StopwatchRepository,
-) : ViewModel() {
-    private val _state = MutableStateFlow(StopwatchDataState(timeNow = System.currentTimeMillis()))
+@HiltViewModel
+internal class NewStopwatchDataViewModel @Inject constructor(private val stopwatchRepository: StopwatchRepository) :
+    ViewModel() {
+    private val _state =
+        MutableStateFlow(
+            NewStopwatchDataState(
+                timeNow = System.currentTimeMillis(),
+                stopwatch = Stopwatch.newInstance()
+            )
+        )
     val state = _state.asStateFlow()
 
     /**
@@ -38,18 +41,20 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
      * Обрабатывает пользовательские интенты для управления секундомером.
      * @param intent Тип действия пользователя
      */
-    fun handleIntent(intent: StopwatchDataIntent) {
+    fun handleIntent(intent: NewStopwatchDataIntent) {
         viewModelScope.launchIO {
             when (intent) {
-                StopwatchDataIntent.ChangeState -> changeState()
+                NewStopwatchDataIntent.AddAndStart -> addAndStart()
+                NewStopwatchDataIntent.ChangeState -> changeState()
             }
         }
     }
 
-    init {
-        viewModelScope.launchIO {
-            initStopwatch()
-        }
+    private suspend fun addAndStart() {
+        val state = _state.value
+        stopwatchRepository.insert(state.stopwatch)
+        _state.update { it.copy(isAddedToDb = true) }
+        changeState()
     }
 
     /**
@@ -57,7 +62,7 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
      */
     private suspend fun changeState() {
         val currentState = _state.value
-        val stopwatch = currentState.stopwatch ?: return
+        val stopwatch = currentState.stopwatch
         val now = System.currentTimeMillis()
         val stopTime = stopwatch.stopTime
         val updatedStopwatch = if (stopTime != null) {
@@ -80,28 +85,6 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         updateTimerState(updatedStopwatch.stopTime == null)
     }
 
-    /**
-     * Инициализирует состояние секундомера из базы данных.
-     * При первом запуске добавляет искусственную задержку для демонстрации загрузки.
-     */
-    private suspend fun initStopwatch() {
-        _state.update { it.copy(isLoading = true) }
-//        delay(2000) // Искусственная задержка для демонстрации
-        stopwatchRepository.getById(id).collect { stopwatch ->
-            if (stopwatch != null) {
-                _state.update {
-                    it.copy(
-                        stopwatch = stopwatch,
-                        isLoading = false,
-                        timeNow = System.currentTimeMillis()
-                    )
-                }
-                updateTimerState(stopwatch.stopTime == null)
-            } else {
-                _state.update { it.copy(isLoading = false, isStopwatchNotFound = true) }
-            }
-        }
-    }
 
     /**
      * Управляет состоянием автоматического обновления таймера.
@@ -138,17 +121,5 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
     private fun stopUpdating() {
         realtimeUpdating?.cancel()
         realtimeUpdating = null
-    }
-
-    /**
-     * Фабрика для создания экземпляра ViewModel с внедрением зависимостей.
-     */
-    @AssistedFactory
-    interface Factory {
-        /**
-         * Создает экземпляр ViewModel с заданным идентификатором.
-         * @param id Идентификатор секундомера
-         */
-        fun create(@Assisted id: Long): StopwatchDataViewModel
     }
 }

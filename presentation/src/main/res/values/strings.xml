@@ -4,4 +4,5 @@
     <string name="timer">Таймер</string>
     <string name="resume">Продолжить</string>
     <string name="pause">Остановить</string>
+    <string name="add_stopwatch">Добавить секундомер</string>
 </resources>

@@ -1,5 +1,6 @@
 package ru.vafeen.presentation.stopwatches
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
@@ -16,7 +17,7 @@ import ru.vafeen.presentation.navigation.NavRootIntent
 
 @HiltViewModel(assistedFactory = StopwatchesViewModel.Factory::class)
 internal class StopwatchesViewModel @AssistedInject constructor(
-    private val stopwatchRepository: StopwatchRepository,
+    val stopwatchRepository: StopwatchRepository,
     @Assisted private val sendRootIntent: (NavRootIntent) -> Unit
 ) : ViewModel() {
 
@@ -31,20 +32,26 @@ internal class StopwatchesViewModel @AssistedInject constructor(
         viewModelScope.launchIO {
             when (intent) {
                 is StopWatchesIntent.NavigateTo -> navigateTo(id = intent.id)
+                StopWatchesIntent.AddNew -> addNew()
             }
         }
-
     }
 
     init {
         viewModelScope.launchIO {
             stopwatchRepository.getAll().collect { stopwatches ->
+                Log.e("collect", stopwatches.joinToString(separator = "\n"))
                 _state.update { it.copy(stopwatches = stopwatches) }
             }
         }
     }
 
-    private fun navigateTo(id: Int) {
+    private suspend fun addNew() {
+//        stopwatchRepository.insert(Stopwatch.newInstance())
+        sendRootIntent(NavRootIntent.NavigateToScreen(Screen.NewStopWatchData))
+    }
+
+    private fun navigateTo(id: Long) {
         sendRootIntent(NavRootIntent.NavigateToScreen(Screen.StopwatchData(id = id)))
     }
 

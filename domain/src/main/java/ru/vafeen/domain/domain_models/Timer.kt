@@ -11,7 +11,7 @@ import java.time.LocalDateTime
  * @property isWork Флаг, указывающий, находится ли таймер в рабочем состоянии (true) или нет (false).
  */
 data class Timer(
-    val id: Int,
+    val id: Long,
     val ldt: LocalDateTime,
     val name: String,
     val isWork: Boolean,
