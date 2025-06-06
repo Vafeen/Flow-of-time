@@ -26,7 +26,7 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
     @Assisted private val id: Int,
     private val stopwatchRepository: StopwatchRepository,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(StopWatchDataState(timeNow = System.currentTimeMillis()))
+    private val _state = MutableStateFlow(StopwatchDataState(timeNow = System.currentTimeMillis()))
     val state = _state.asStateFlow()
 
     /**
@@ -86,7 +86,7 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
      */
     private suspend fun initStopwatch() {
         _state.update { it.copy(isLoading = true) }
-        delay(2000) // Искусственная задержка для демонстрации
+//        delay(2000) // Искусственная задержка для демонстрации
         stopwatchRepository.getById(id).collect { stopwatch ->
             if (stopwatch != null) {
                 _state.update {

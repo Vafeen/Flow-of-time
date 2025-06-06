@@ -28,6 +28,7 @@ internal class NavRootViewModel @Inject constructor(
     private val stopwatchRepository: StopwatchRepository
 ) : ViewModel() {
     init {
+        // todo Delete after creating adding Stopwatch
         viewModelScope.launchIO {
 
             stopwatchRepository.insert(

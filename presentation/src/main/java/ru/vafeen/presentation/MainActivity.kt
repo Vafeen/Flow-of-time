@@ -19,4 +19,13 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    companion object {
+        val x = 6
+    }
+
+    object X {
+        val x = 5
+    }
+
 }
