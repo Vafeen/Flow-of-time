@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.presentation.common.utils.subtractDuration
@@ -27,6 +28,7 @@ internal fun StopwatchComponent(
     @Composable
     fun content(stopwatch: Stopwatch) {
         Scaffold(
+            containerColor = Color.Transparent,
             floatingActionButton = {
                 fab?.invoke()
             }) { innerPadding ->

@@ -15,13 +15,17 @@ internal data class ScheduleColors(
 )
 
 private val basePalette = ScheduleColors(
-    mainColor = Color(0xFF0E568D),
+    mainColor = Color(0xFFECEA0E),
     background = Color.White,
     text = Color.Black,
-    buttonColor = Color.DarkGray
+    buttonColor = Color(0xFFF9F9F9)
 )
 
-private val baseDarkPalette = basePalette.copy(background = Color.Black)
+private val baseDarkPalette = basePalette.copy(
+    background = Color.Black,
+    text = Color.White,
+    buttonColor = Color(0xFF2D2D31)
+)
 
 
 @Composable
@@ -31,9 +35,9 @@ fun MainTheme(
 ) {
 
     val colors = if (darkTheme) {
-        basePalette
-    } else {
         baseDarkPalette
+    } else {
+        basePalette
     }
 
     CompositionLocalProvider(

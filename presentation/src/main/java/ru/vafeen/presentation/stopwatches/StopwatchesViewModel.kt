@@ -1,6 +1,5 @@
 package ru.vafeen.presentation.stopwatches
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -10,8 +9,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import ru.vafeen.domain.database.StopwatchRepository
+import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.utils.launchIO
 import ru.vafeen.presentation.common.Screen
+import ru.vafeen.presentation.common.viewmodels.StopwatchManagingViewModel
 import ru.vafeen.presentation.navigation.NavRootIntent
 
 /**
@@ -24,8 +25,7 @@ import ru.vafeen.presentation.navigation.NavRootIntent
 internal class StopwatchesViewModel @AssistedInject constructor(
     private val stopwatchRepository: StopwatchRepository,
     @Assisted private val sendRootIntent: (NavRootIntent) -> Unit
-) : ViewModel() {
-
+) : StopwatchManagingViewModel() {
     private val _state = MutableStateFlow(
         StopwatchesState(
             stopwatches = listOf(),
@@ -38,6 +38,7 @@ internal class StopwatchesViewModel @AssistedInject constructor(
         viewModelScope.launchIO {
             stopwatchRepository.getAll().collect { stopwatches ->
                 _state.update { it.copy(stopwatches = stopwatches) }
+                updateStopwatchState(stopwatches.any { it.stopTime == null })
             }
         }
     }
@@ -47,11 +48,20 @@ internal class StopwatchesViewModel @AssistedInject constructor(
      *
      * @param intent Интент, описывающий действие пользователя.
      */
-    fun handleIntent(intent: StopWatchesIntent) {
+    fun handleIntent(intent: StopwatchesIntent) {
         viewModelScope.launchIO {
             when (intent) {
-                is StopWatchesIntent.NavigateTo -> navigateTo(id = intent.id)
-                StopWatchesIntent.AddNew -> addNew()
+                is StopwatchesIntent.NavigateTo -> navigateTo(id = intent.id)
+                StopwatchesIntent.AddNew -> addNew()
+                is StopwatchesIntent.Toggle -> makeSthAndUpdate(
+                    stopwatch = intent.stopwatch,
+                    sth = ::toggle
+                )
+
+                is StopwatchesIntent.Reset -> makeSthAndUpdate(
+                    stopwatch = intent.stopwatch,
+                    sth = ::reset
+                )
             }
         }
 
@@ -62,6 +72,24 @@ internal class StopwatchesViewModel @AssistedInject constructor(
             stopwatchRepository.getAll().collect { stopwatches ->
                 _state.update { it.copy(stopwatches = stopwatches) }
             }
+        }
+    }
+
+    private suspend fun makeSthAndUpdate(stopwatch: Stopwatch, sth: (Stopwatch) -> Stopwatch) {
+        stopwatchRepository.insert(sth(stopwatch))
+        _state.update { it.copy(timeNow = System.currentTimeMillis()) }
+    }
+
+
+    private fun updateStopwatchState(shouldBeRunning: Boolean) {
+        if (shouldBeRunning) {
+            startUpdating { currentTimeMillis ->
+                _state.update {
+                    it.copy(timeNow = currentTimeMillis)
+                }
+            }
+        } else {
+            stopUpdating()
         }
     }
 
@@ -80,6 +108,7 @@ internal class StopwatchesViewModel @AssistedInject constructor(
     private fun navigateTo(id: Long) {
         sendRootIntent(NavRootIntent.NavigateToScreen(Screen.StopwatchData(id = id)))
     }
+
 
     /**
      * Фабрика для создания экземпляров [StopwatchesViewModel] с параметрами.

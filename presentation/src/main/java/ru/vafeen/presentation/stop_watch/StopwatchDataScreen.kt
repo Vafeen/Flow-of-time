@@ -36,9 +36,8 @@ internal fun StopwatchDataScreen(
         fab = {
             state.stopwatch?.let { stopwatch ->
                 FloatingActionButton(
-                    onClick = { viewModel.handleIntent(StopwatchDataIntent.ChangeState) }
+                    onClick = { viewModel.handleIntent(StopwatchDataIntent.Toggle) }
                 ) {
-
                     Icon(
                         painter = painterResource(
                             if (stopwatch.stopTime != null) R.drawable.resume else R.drawable.pause
