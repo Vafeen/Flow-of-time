@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,8 +39,6 @@ internal fun StopwatchesScreen(sendRootIntent: (NavRootIntent) -> Unit) {
         factory.create(sendRootIntent = sendRootIntent)
     }
     val state by viewModel.state.collectAsState()
-    val list by rememberUpdatedState(state.stopwatches)
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
@@ -62,7 +59,7 @@ internal fun StopwatchesScreen(sendRootIntent: (NavRootIntent) -> Unit) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            items(list) { stopwatch ->
+            items(items = state.stopwatches) { stopwatch ->
                 Column(
                     modifier = Modifier
                         .border(border = BorderStroke(1.dp, AppTheme.colors.text))

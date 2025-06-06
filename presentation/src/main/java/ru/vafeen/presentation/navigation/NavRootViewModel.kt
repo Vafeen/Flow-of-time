@@ -1,6 +1,5 @@
 package ru.vafeen.presentation.navigation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -9,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import ru.vafeen.domain.database.StopwatchRepository
 import ru.vafeen.domain.utils.launchIO
 import ru.vafeen.presentation.common.Screen
 import ru.vafeen.presentation.common.screenWithBottomBar
@@ -22,31 +20,7 @@ import javax.inject.Inject
  * и испускает эффекты навигации ([NavRootEffect]) для выполнения переходов.
  */
 @HiltViewModel
-internal class NavRootViewModel @Inject constructor(
-    private val stopwatchRepository: StopwatchRepository
-) : ViewModel() {
-    init {
-//        // todo Delete after creating adding Stopwatch
-//        viewModelScope.launchIO {
-//
-//            stopwatchRepository.insert(
-//                stopwatchRepository.getById(1).first() ?: Stopwatch(
-//                    id = System.currentTimeMillis(),
-//                    startTime = System.currentTimeMillis(),
-//                    stopTime = System.currentTimeMillis() + 1000,
-//                    name = "test",
-//                )
-//            )
-//        }
-    }
-
-    init {
-        viewModelScope.launchIO {
-            stopwatchRepository.getAll().collect { stopwatches ->
-                Log.e("stop", stopwatches.joinToString("\n"))
-            }
-        }
-    }
+internal class NavRootViewModel @Inject constructor() : ViewModel() {
 
     // Поток эффектов навигации для подписчиков (например, UI)
     private val _effects = MutableSharedFlow<NavRootEffect>()

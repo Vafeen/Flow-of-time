@@ -12,3 +12,4 @@ internal data class StopwatchesState(
     val stopwatches: List<Stopwatch>,
     val timeNow: Long,
 )
+

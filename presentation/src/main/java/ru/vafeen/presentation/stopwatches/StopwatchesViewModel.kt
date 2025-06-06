@@ -22,7 +22,7 @@ import ru.vafeen.presentation.navigation.NavRootIntent
  */
 @HiltViewModel(assistedFactory = StopwatchesViewModel.Factory::class)
 internal class StopwatchesViewModel @AssistedInject constructor(
-    val stopwatchRepository: StopwatchRepository,
+    private val stopwatchRepository: StopwatchRepository,
     @Assisted private val sendRootIntent: (NavRootIntent) -> Unit
 ) : ViewModel() {
 
@@ -54,14 +54,21 @@ internal class StopwatchesViewModel @AssistedInject constructor(
                 StopWatchesIntent.AddNew -> addNew()
             }
         }
+
+    }
+
+    init {
+        viewModelScope.launchIO {
+            stopwatchRepository.getAll().collect { stopwatches ->
+                _state.update { it.copy(stopwatches = stopwatches) }
+            }
+        }
     }
 
     /**
      * Обрабатывает добавление нового секундомера — навигация на экран создания.
      */
-    private suspend fun addNew() {
-        // Можно раскомментировать для автоматического добавления нового секундомера в БД
-        // stopwatchRepository.insert(Stopwatch.newInstance())
+    private fun addNew() {
         sendRootIntent(NavRootIntent.NavigateToScreen(Screen.NewStopWatchData))
     }
 
