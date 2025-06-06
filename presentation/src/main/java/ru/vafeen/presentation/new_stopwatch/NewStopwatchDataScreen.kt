@@ -14,10 +14,20 @@ import ru.vafeen.presentation.common.components.StopwatchComponent
 import ru.vafeen.presentation.common.components.TextForThisTheme
 import ru.vafeen.presentation.navigation.NavRootIntent
 
+/**
+ * Компонент экрана создания нового секундомера.
+ *
+ * Отображает секундомер с кнопкой действия:
+ * - если секундомер уже добавлен в базу данных, отображается кнопка паузы/возобновления;
+ * - если секундомер ещё не добавлен, отображается кнопка добавления в базу.
+ *
+ * @param sendRootIntent Функция для отправки навигационных интентов в корневой навигатор.
+ */
 @Composable
 internal fun NewStopwatchDataScreen(sendRootIntent: (NavRootIntent) -> Unit) {
     val viewModel: NewStopwatchDataViewModel = hiltViewModel()
     val state by viewModel.state.collectAsState()
+
     StopwatchComponent(
         stopwatch = state.stopwatch,
         fab = {
@@ -38,11 +48,12 @@ internal fun NewStopwatchDataScreen(sendRootIntent: (NavRootIntent) -> Unit) {
                     ExtendedFloatingActionButton(onClick = {
                         viewModel.handleIntent(NewStopwatchDataIntent.AddAndStart)
                     }) {
-                        TextForThisTheme("Add to db")
+                        TextForThisTheme(stringResource(R.string.add_to_db))
                         Icon(
                             painter = painterResource(
                                 if (stopwatch.stopTime != null) R.drawable.resume else R.drawable.pause
-                            ), contentDescription = stringResource(
+                            ),
+                            contentDescription = stringResource(
                                 if (stopwatch.stopTime != null) R.string.resume else R.string.pause
                             )
                         )

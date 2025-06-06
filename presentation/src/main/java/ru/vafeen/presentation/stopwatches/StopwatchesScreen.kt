@@ -26,6 +26,14 @@ import ru.vafeen.presentation.R
 import ru.vafeen.presentation.navigation.NavRootIntent
 import ru.vafeen.presentation.ui.theme.AppTheme
 
+/**
+ * Экран отображения списка секундомеров.
+ *
+ * Отображает список секундомеров с возможностью навигации к каждому из них,
+ * а также предоставляет кнопку для добавления нового секундомера.
+ *
+ * @param sendRootIntent Функция для отправки навигационных интентов в корневой навигатор.
+ */
 @Composable
 internal fun StopwatchesScreen(sendRootIntent: (NavRootIntent) -> Unit) {
     val viewModel = hiltViewModel<StopwatchesViewModel, StopwatchesViewModel.Factory> { factory ->
@@ -33,6 +41,7 @@ internal fun StopwatchesScreen(sendRootIntent: (NavRootIntent) -> Unit) {
     }
     val state by viewModel.state.collectAsState()
     val list by rememberUpdatedState(state.stopwatches)
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
@@ -43,7 +52,8 @@ internal fun StopwatchesScreen(sendRootIntent: (NavRootIntent) -> Unit) {
                         painter = painterResource(R.drawable.add),
                         contentDescription = stringResource(R.string.add_stopwatch)
                     )
-                })
+                }
+            )
         },
         floatingActionButtonPosition = FabPosition.Center
     ) { innerPadding ->
@@ -58,15 +68,14 @@ internal fun StopwatchesScreen(sendRootIntent: (NavRootIntent) -> Unit) {
                         .border(border = BorderStroke(1.dp, AppTheme.colors.text))
                         .padding(3.dp)
                 ) {
-                    Text("stop watch ${stopwatch.name}")
+                    Text(text = "Stopwatch ${stopwatch.name}")
                     Button(onClick = {
                         viewModel.handleIntent(StopWatchesIntent.NavigateTo(id = stopwatch.id))
                     }) {
-                        Text("navigate to stopwatch ${stopwatch.name}")
+                        Text(text = "Navigate to stopwatch ${stopwatch.name}")
                     }
                 }
             }
         }
     }
-
 }

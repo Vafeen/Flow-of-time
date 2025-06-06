@@ -15,31 +15,32 @@ import ru.vafeen.domain.utils.launchIO
 import javax.inject.Inject
 
 /**
- * ViewModel для управления состоянием секундомера и взаимодействием с базой данных.
+ * ViewModel для управления состоянием создания нового секундомера и взаимодействием с базой данных.
  *
- * @property id Идентификатор секундомера
- * @property stopwatchRepository Репозиторий для работы с данными секундомера
+ * @property stopwatchRepository Репозиторий для работы с данными секундомера.
  */
 @HiltViewModel
-internal class NewStopwatchDataViewModel @Inject constructor(private val stopwatchRepository: StopwatchRepository) :
-    ViewModel() {
-    private val _state =
-        MutableStateFlow(
-            NewStopwatchDataState(
-                timeNow = System.currentTimeMillis(),
-                stopwatch = Stopwatch.newInstance()
-            )
+internal class NewStopwatchDataViewModel @Inject constructor(
+    private val stopwatchRepository: StopwatchRepository
+) : ViewModel() {
+
+    private val _state = MutableStateFlow(
+        NewStopwatchDataState(
+            timeNow = System.currentTimeMillis(),
+            stopwatch = Stopwatch.newInstance()
         )
+    )
     val state = _state.asStateFlow()
 
     /**
-     * Job для обработки обновления в реальном времени
+     * Job для обработки обновления времени в реальном времени.
      */
     private var realtimeUpdating: Job? = null
 
     /**
      * Обрабатывает пользовательские интенты для управления секундомером.
-     * @param intent Тип действия пользователя
+     *
+     * @param intent Интент, определяющий действие пользователя.
      */
     fun handleIntent(intent: NewStopwatchDataIntent) {
         viewModelScope.launchIO {
@@ -50,6 +51,9 @@ internal class NewStopwatchDataViewModel @Inject constructor(private val stopwat
         }
     }
 
+    /**
+     * Добавляет новый секундомер в базу данных и запускает его.
+     */
     private suspend fun addAndStart() {
         val state = _state.value
         stopwatchRepository.insert(state.stopwatch)
@@ -58,7 +62,7 @@ internal class NewStopwatchDataViewModel @Inject constructor(private val stopwat
     }
 
     /**
-     * Переключает состояние секундомера (старт/пауза) и обновляет данные в БД.
+     * Переключает состояние секундомера (старт/пауза) и обновляет данные в базе.
      */
     private suspend fun changeState() {
         val currentState = _state.value
@@ -66,7 +70,7 @@ internal class NewStopwatchDataViewModel @Inject constructor(private val stopwat
         val now = System.currentTimeMillis()
         val stopTime = stopwatch.stopTime
         val updatedStopwatch = if (stopTime != null) {
-            // Запуск секундомера с учетом прошедшего времени
+            // Запуск секундомера с учётом прошедшего времени
             val elapsed = stopTime - stopwatch.startTime
             stopwatch.copy(
                 startTime = now - elapsed,
@@ -85,10 +89,10 @@ internal class NewStopwatchDataViewModel @Inject constructor(private val stopwat
         updateTimerState(updatedStopwatch.stopTime == null)
     }
 
-
     /**
      * Управляет состоянием автоматического обновления таймера.
-     * @param shouldBeRunning Флаг, указывающий должен ли таймер обновляться
+     *
+     * @param shouldBeRunning Флаг, указывающий, должен ли таймер обновляться.
      */
     private fun updateTimerState(shouldBeRunning: Boolean) {
         if (shouldBeRunning) {

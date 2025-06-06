@@ -5,4 +5,5 @@
     <string name="resume">Продолжить</string>
     <string name="pause">Остановить</string>
     <string name="add_stopwatch">Добавить секундомер</string>
+    <string name="add_to_db">Добавить</string>
 </resources>
