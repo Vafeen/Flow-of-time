@@ -14,6 +14,12 @@ import ru.vafeen.domain.utils.launchIO
 import ru.vafeen.presentation.common.Screen
 import ru.vafeen.presentation.navigation.NavRootIntent
 
+/**
+ * ViewModel для управления списком секундомеров и навигацией на соответствующие экраны.
+ *
+ * @property stopwatchRepository Репозиторий для работы с данными секундомеров.
+ * @property sendRootIntent Функция для отправки навигационных интентов в корневой навигатор.
+ */
 @HiltViewModel(assistedFactory = StopwatchesViewModel.Factory::class)
 internal class StopwatchesViewModel @AssistedInject constructor(
     private val stopwatchRepository: StopwatchRepository,
@@ -27,10 +33,25 @@ internal class StopwatchesViewModel @AssistedInject constructor(
         )
     )
     val state = _state.asStateFlow()
+
+    init {
+        viewModelScope.launchIO {
+            stopwatchRepository.getAll().collect { stopwatches ->
+                _state.update { it.copy(stopwatches = stopwatches) }
+            }
+        }
+    }
+
+    /**
+     * Обрабатывает интенты от UI.
+     *
+     * @param intent Интент, описывающий действие пользователя.
+     */
     fun handleIntent(intent: StopWatchesIntent) {
         viewModelScope.launchIO {
             when (intent) {
                 is StopWatchesIntent.NavigateTo -> navigateTo(id = intent.id)
+                StopWatchesIntent.AddNew -> addNew()
             }
         }
 
@@ -44,10 +65,25 @@ internal class StopwatchesViewModel @AssistedInject constructor(
         }
     }
 
-    private fun navigateTo(id: Int) {
+    /**
+     * Обрабатывает добавление нового секундомера — навигация на экран создания.
+     */
+    private fun addNew() {
+        sendRootIntent(NavRootIntent.NavigateToScreen(Screen.NewStopWatchData))
+    }
+
+    /**
+     * Обрабатывает навигацию к экрану конкретного секундомера.
+     *
+     * @param id Идентификатор секундомера для навигации.
+     */
+    private fun navigateTo(id: Long) {
         sendRootIntent(NavRootIntent.NavigateToScreen(Screen.StopwatchData(id = id)))
     }
 
+    /**
+     * Фабрика для создания экземпляров [StopwatchesViewModel] с параметрами.
+     */
     @AssistedFactory
     interface Factory {
         fun create(sendRootIntent: (NavRootIntent) -> Unit): StopwatchesViewModel

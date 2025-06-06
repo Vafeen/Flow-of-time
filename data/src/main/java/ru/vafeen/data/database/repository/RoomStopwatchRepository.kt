@@ -47,7 +47,7 @@ internal class RoomStopwatchRepository @Inject constructor(
     override suspend fun delete(stopwatch: Stopwatch) =
         stopwatchDao.delete(stopwatchEntity = stopwatch.toStopWatchEntity())
 
-    override suspend fun getById(id: Int): Flow<Stopwatch?> = stopwatchDao.getById(id).map {
+    override suspend fun getById(id: Long): Flow<Stopwatch?> = stopwatchDao.getById(id).map {
         it?.toStopWatch()
     }
 }

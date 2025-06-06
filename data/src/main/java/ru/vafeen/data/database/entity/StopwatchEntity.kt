@@ -8,14 +8,18 @@ import androidx.room.PrimaryKey
  *
  * Используется для хранения информации о секундомерах в таблице "stopwatches".
  *
+<<<<<<< HEAD
+ * @property id Уникальный идентификатор секундомера.
+=======
  * @property id Уникальный идентификатор секундомера. Генерируется автоматически при вставке в базу.
+>>>>>>> main
  * @property startTime Временная метка (в миллисекундах с эпохи), когда секундомер был запущен.
  * @property name Название или метка секундомера.
  * @property stopTime Временная метка (в миллисекундах с эпохи), когда секундомер был остановлен, либо null, если секундомер работает.
  */
 @Entity(tableName = "stopwatches")
 internal data class StopwatchEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey val id: Long,
     val startTime: Long,
     val name: String,
     val stopTime: Long? = null,

@@ -23,7 +23,7 @@ import ru.vafeen.domain.utils.launchIO
  */
 @HiltViewModel(assistedFactory = StopwatchDataViewModel.Factory::class)
 internal class StopwatchDataViewModel @AssistedInject constructor(
-    @Assisted private val id: Int,
+    @Assisted private val id: Long,
     private val stopwatchRepository: StopwatchRepository,
 ) : ViewModel() {
     private val _state = MutableStateFlow(StopwatchDataState(timeNow = System.currentTimeMillis()))
@@ -57,7 +57,7 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
      */
     private suspend fun changeState() {
         val currentState = _state.value
-        val stopwatch = currentState.stopWatch ?: return
+        val stopwatch = currentState.stopwatch ?: return
         val now = System.currentTimeMillis()
         val stopTime = stopwatch.stopTime
         val updatedStopwatch = if (stopTime != null) {
@@ -67,12 +67,12 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
                 startTime = now - elapsed,
                 stopTime = null
             ).apply {
-                _state.update { it.copy(stopWatch = this) }
+                _state.update { it.copy(stopwatch = this) }
             }
         } else {
             // Остановка секундомера с фиксацией времени остановки
             stopwatch.copy(stopTime = now).apply {
-                _state.update { it.copy(stopWatch = this) }
+                _state.update { it.copy(stopwatch = this) }
             }
         }
 
@@ -91,7 +91,7 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
             if (stopwatch != null) {
                 _state.update {
                     it.copy(
-                        stopWatch = stopwatch,
+                        stopwatch = stopwatch,
                         isLoading = false,
                         timeNow = System.currentTimeMillis()
                     )
@@ -149,6 +149,6 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
          * Создает экземпляр ViewModel с заданным идентификатором.
          * @param id Идентификатор секундомера
          */
-        fun create(@Assisted id: Int): StopwatchDataViewModel
+        fun create(@Assisted id: Long): StopwatchDataViewModel
     }
 }

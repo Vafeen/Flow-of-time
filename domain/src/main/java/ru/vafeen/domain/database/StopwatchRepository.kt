@@ -37,5 +37,5 @@ interface StopwatchRepository {
      * @param id Идентификатор секундомера.
      * @return Модель секундомера [Stopwatch], если найден, или null, если отсутствует.
      */
-    suspend fun getById(id: Int): Flow<Stopwatch?>
+    suspend fun getById(id: Long): Flow<Stopwatch?>
 }

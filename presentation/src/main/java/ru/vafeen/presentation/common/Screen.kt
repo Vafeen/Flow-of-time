@@ -37,7 +37,10 @@ internal sealed interface Screen {
      * @property id Идентификатор секундомера, передаваемый для загрузки данных.
      */
     @Serializable
-    data class StopwatchData(val id: Int) : Screen
+    data class StopwatchData(val id: Long) : Screen
+
+    @Serializable
+    data object NewStopWatchData : Screen
 }
 
 /**
@@ -58,6 +61,7 @@ internal fun getScreenFromRoute(navBackStackEntry: NavBackStackEntry): Screen? {
         route == Screen.Timers::class.qualifiedName -> Screen.Timers
         route.startsWith("${Screen.TimerData::class.qualifiedName}") -> navBackStackEntry.toRoute<Screen.TimerData>()
         route.startsWith("${Screen.StopwatchData::class.qualifiedName}") -> navBackStackEntry.toRoute<Screen.StopwatchData>()
+        route == Screen.NewStopWatchData::class.qualifiedName -> Screen.NewStopWatchData
         else -> null
     }
 }

@@ -49,5 +49,5 @@ internal interface StopwatchDao {
      * @return Поток [Flow], эмитирующий [StopwatchEntity] или null, если запись не найдена.
      */
     @Query("SELECT * FROM stopwatches WHERE id = :id LIMIT 1")
-    fun getById(id: Int): Flow<StopwatchEntity?>
+    fun getById(id: Long): Flow<StopwatchEntity?>
 }
