@@ -28,6 +28,7 @@ import ru.vafeen.presentation.stop_watch.StopwatchDataScreen
 import ru.vafeen.presentation.stopwatches.StopwatchesScreen
 import ru.vafeen.presentation.timer_data.TimerDataScreen
 import ru.vafeen.presentation.timers.TimersScreen
+import ru.vafeen.presentation.ui.theme.AppTheme
 
 /**
  * Корневой навигационный компонент приложения, реализованный с использованием Jetpack Compose Navigation.
@@ -61,6 +62,7 @@ internal fun NavRoot() {
     }
 
     Scaffold(
+        containerColor = AppTheme.colors.background,
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             // Определение элементов нижней навигационной панели
@@ -80,6 +82,7 @@ internal fun NavRoot() {
             // Отображение BottomBar только на определённых экранах
             if (state.currentScreen in bottomBarScreens.map { it.screen }) {
                 BottomBar(
+                    containerColor = AppTheme.colors.mainColor,
                     currentScreen = state.currentScreen,
                     screens = bottomBarScreens,
                     navigateTo = { screen ->

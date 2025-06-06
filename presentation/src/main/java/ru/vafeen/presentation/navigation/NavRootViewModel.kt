@@ -2,6 +2,7 @@ package ru.vafeen.presentation.navigation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +57,6 @@ internal class NavRootViewModel @Inject constructor() : ViewModel() {
         _effects.emit(NavRootEffect.NavigateToScreen { navHostController ->
             navHostController.navigate(screen) {
                 launchSingleTop = true
-//                restoreState = false
             }
         })
         _state.update {
@@ -73,9 +73,8 @@ internal class NavRootViewModel @Inject constructor() : ViewModel() {
         _effects.emit(
             NavRootEffect.NavigateToScreen { navHostController ->
                 navHostController.navigate(screen) {
-//                    popUpTo(navHostController.graph.findStartDestination().id)
+                    popUpTo(navHostController.graph.findStartDestination().id)
                     launchSingleTop = true
-//                    restoreState = false
                 }
             }
         )

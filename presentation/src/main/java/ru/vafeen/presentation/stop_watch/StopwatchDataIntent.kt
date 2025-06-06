@@ -7,5 +7,6 @@ internal sealed class StopwatchDataIntent {
     /**
      * Интент для переключения состояния секундомера (старт/пауза).
      */
-    data object ChangeState : StopwatchDataIntent()
+    data object Toggle : StopwatchDataIntent()
+    data object Reset : StopwatchDataIntent()
 }
