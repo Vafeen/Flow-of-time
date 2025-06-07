@@ -1,17 +1,21 @@
 package ru.vafeen.presentation.stop_watch
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import ru.vafeen.domain.database.StopwatchRepository
 import ru.vafeen.domain.domain_models.Stopwatch
+import ru.vafeen.domain.services.StopwatchManager
 import ru.vafeen.domain.utils.launchIO
-import ru.vafeen.presentation.common.viewmodels.StopwatchManagingViewModel
 
 /**
  * ViewModel для управления состоянием секундомера и взаимодействием с базой данных.
@@ -23,10 +27,12 @@ import ru.vafeen.presentation.common.viewmodels.StopwatchManagingViewModel
 internal class StopwatchDataViewModel @AssistedInject constructor(
     @Assisted private val id: Long,
     private val stopwatchRepository: StopwatchRepository,
-) : StopwatchManagingViewModel() {
+    private val stopwatchManager: StopwatchManager,
+) : ViewModel() {
 
     private val _state = MutableStateFlow(StopwatchDataState(timeNow = System.currentTimeMillis()))
     val state = _state.asStateFlow()
+    private var realtimeUpdating: Job? = null
 
     init {
         viewModelScope.launchIO {
@@ -42,8 +48,8 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
     fun handleIntent(intent: StopwatchDataIntent) {
         viewModelScope.launchIO {
             when (intent) {
-                StopwatchDataIntent.Toggle -> makeSthAndUpdate(sth = ::toggle)
-                StopwatchDataIntent.Reset -> makeSthAndUpdate(sth = ::reset)
+                StopwatchDataIntent.Toggle -> makeSthAndUpdate(sth = stopwatchManager::toggle)
+                StopwatchDataIntent.Reset -> makeSthAndUpdate(sth = stopwatchManager::reset)
             }
         }
     }
@@ -98,6 +104,31 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         } else {
             stopUpdating()
         }
+    }
+
+    /**
+     * Запускает периодическое обновление времени в UI.
+     * Обновления происходят каждую секунду до остановки.
+     *
+     * @param updating Лямбда-функция, вызываемая каждую секунду с текущим временем в миллисекундах.
+     */
+    fun startUpdating(updating: (Long) -> Unit) {
+        if (realtimeUpdating?.isActive == true) return
+
+        realtimeUpdating = viewModelScope.launchIO {
+            while (isActive) {
+                updating(System.currentTimeMillis())
+                delay(1000)
+            }
+        }
+    }
+
+    /**
+     * Останавливает обновление времени в UI.
+     */
+    fun stopUpdating() {
+        realtimeUpdating?.cancel()
+        realtimeUpdating = null
     }
 
     /**

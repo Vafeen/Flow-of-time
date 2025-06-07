@@ -32,4 +32,28 @@ internal sealed class StopwatchesIntent {
      * @property stopwatch Объект секундомера, который нужно сбросить.
      */
     data class Reset(val stopwatch: Stopwatch) : StopwatchesIntent()
+
+    /**
+     * Интент для переключения режима удаления секундомеров с выбором конкретного секундомера.
+     *
+     * @property stopwatch Секундомер, для которого переключается режим удаления.
+     */
+    data class ToggleDeletingState(val stopwatch: Stopwatch) : StopwatchesIntent()
+
+    /**
+     * Интент для отмены режима удаления секундомеров.
+     */
+    data object UndoDeleting : StopwatchesIntent()
+
+    /**
+     * Интент для изменения статуса выбора секундомера для удаления.
+     *
+     * @property stopwatch Секундомер, для которого меняется статус выбора.
+     */
+    data class ChangeStatusForDeleting(val stopwatch: Stopwatch) : StopwatchesIntent()
+
+    /**
+     * Интент для удаления всех выбранных секундомеров.
+     */
+    data object DeleteSelected : StopwatchesIntent()
 }
