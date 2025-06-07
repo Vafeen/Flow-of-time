@@ -9,4 +9,5 @@
     <string name="stopwatches">Секундомеры</string>
     <string name="reset">Сбросить</string>
     <string name="delete">Удалить</string>
+    <string name="undo">Отменить</string>
 </resources>
