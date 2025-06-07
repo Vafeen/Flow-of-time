@@ -24,12 +24,19 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
     @Assisted private val id: Long,
     private val stopwatchRepository: StopwatchRepository,
 ) : StopwatchManagingViewModel() {
+
     private val _state = MutableStateFlow(StopwatchDataState(timeNow = System.currentTimeMillis()))
     val state = _state.asStateFlow()
 
+    init {
+        viewModelScope.launchIO {
+            initStopwatch()
+        }
+    }
 
     /**
      * Обрабатывает пользовательские интенты для управления секундомером.
+     *
      * @param intent Тип действия пользователя
      */
     fun handleIntent(intent: StopwatchDataIntent) {
@@ -41,12 +48,11 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         }
     }
 
-    init {
-        viewModelScope.launchIO {
-            initStopwatch()
-        }
-    }
-
+    /**
+     * Выполняет преобразование секундомера и обновляет данные в репозитории.
+     *
+     * @param sth Функция преобразования секундомера (например, toggle или reset).
+     */
     private suspend fun makeSthAndUpdate(sth: (Stopwatch) -> Stopwatch) {
         val currentState = _state.value
         val stopwatch = currentState.stopwatch ?: return
@@ -54,14 +60,13 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         stopwatchRepository.insert(newStopwatch)
     }
 
-
     /**
      * Инициализирует состояние секундомера из базы данных.
      * При первом запуске добавляет искусственную задержку для демонстрации загрузки.
      */
     private suspend fun initStopwatch() {
         _state.update { it.copy(isLoading = true) }
-//        delay(2000) // Искусственная задержка для демонстрации
+        // delay(2000) // Искусственная задержка для демонстрации
         stopwatchRepository.getById(id).collect { stopwatch ->
             if (stopwatch != null) {
                 _state.update {
@@ -80,6 +85,7 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
 
     /**
      * Управляет состоянием автоматического обновления таймера.
+     *
      * @param shouldBeRunning Флаг, указывающий должен ли таймер обновляться
      */
     private fun updateStopwatchState(shouldBeRunning: Boolean) {
@@ -101,6 +107,7 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
     interface Factory {
         /**
          * Создает экземпляр ViewModel с заданным идентификатором.
+         *
          * @param id Идентификатор секундомера
          */
         fun create(@Assisted id: Long): StopwatchDataViewModel
