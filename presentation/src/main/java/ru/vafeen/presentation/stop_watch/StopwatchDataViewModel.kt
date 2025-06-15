@@ -16,16 +16,20 @@ import ru.vafeen.domain.database.StopwatchRepository
 import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.services.StopwatchManager
 import ru.vafeen.domain.utils.launchIO
+import ru.vafeen.presentation.navigation.NavRootIntent
 
 /**
  * ViewModel для управления состоянием секундомера и взаимодействием с базой данных.
  *
- * @property id Идентификатор секундомера
- * @property stopwatchRepository Репозиторий для работы с данными секундомера
+ * @property id Идентификатор секундомера.
+ * @property stopwatchRepository Репозиторий для работы с данными секундомера.
+ * @property stopwatchManager Менеджер логики секундомера.
+ * @property sendRootIntent Функция для отправки навигационных интентов в корневой навигатор.
  */
 @HiltViewModel(assistedFactory = StopwatchDataViewModel.Factory::class)
 internal class StopwatchDataViewModel @AssistedInject constructor(
     @Assisted private val id: Long,
+    @Assisted private val sendRootIntent: (NavRootIntent) -> Unit,
     private val stopwatchRepository: StopwatchRepository,
     private val stopwatchManager: StopwatchManager,
 ) : ViewModel() {
@@ -43,13 +47,14 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
     /**
      * Обрабатывает пользовательские интенты для управления секундомером.
      *
-     * @param intent Тип действия пользователя
+     * @param intent Тип действия пользователя.
      */
     fun handleIntent(intent: StopwatchDataIntent) {
         viewModelScope.launchIO {
             when (intent) {
                 StopwatchDataIntent.Toggle -> makeSthAndUpdate(sth = stopwatchManager::toggle)
                 StopwatchDataIntent.Reset -> makeSthAndUpdate(sth = stopwatchManager::reset)
+                StopwatchDataIntent.Delete -> delete()
             }
         }
     }
@@ -68,23 +73,17 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
 
     /**
      * Инициализирует состояние секундомера из базы данных.
-     * При первом запуске добавляет искусственную задержку для демонстрации загрузки.
      */
     private suspend fun initStopwatch() {
-        _state.update { it.copy(isLoading = true) }
-        // delay(2000) // Искусственная задержка для демонстрации
         stopwatchRepository.getById(id).collect { stopwatch ->
             if (stopwatch != null) {
                 _state.update {
                     it.copy(
                         stopwatch = stopwatch,
-                        isLoading = false,
                         timeNow = System.currentTimeMillis()
                     )
                 }
                 updateStopwatchState(stopwatch.stopTime == null)
-            } else {
-                _state.update { it.copy(isLoading = false, isStopwatchNotFound = true) }
             }
         }
     }
@@ -92,7 +91,7 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
     /**
      * Управляет состоянием автоматического обновления таймера.
      *
-     * @param shouldBeRunning Флаг, указывающий должен ли таймер обновляться
+     * @param shouldBeRunning Флаг, указывающий, должен ли таймер обновляться.
      */
     private fun updateStopwatchState(shouldBeRunning: Boolean) {
         if (shouldBeRunning) {
@@ -104,6 +103,15 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         } else {
             stopUpdating()
         }
+    }
+
+    /**
+     * Удаляет секундомер из репозитория и возвращается назад по навигации.
+     */
+    private suspend fun delete() {
+        val stopwatch = _state.value.stopwatch ?: return
+        sendRootIntent(NavRootIntent.Back)
+        stopwatchRepository.delete(stopwatch)
     }
 
     /**
@@ -139,8 +147,13 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
         /**
          * Создает экземпляр ViewModel с заданным идентификатором.
          *
-         * @param id Идентификатор секундомера
+         * @param id Идентификатор секундомера.
+         * @param sendRootIntent Функция для отправки навигационных интентов.
+         * @return Новый экземпляр [StopwatchDataViewModel].
          */
-        fun create(@Assisted id: Long): StopwatchDataViewModel
+        fun create(
+            @Assisted id: Long,
+            @Assisted sendRootIntent: (NavRootIntent) -> Unit,
+        ): StopwatchDataViewModel
     }
 }

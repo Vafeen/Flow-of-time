@@ -2,6 +2,9 @@ package ru.vafeen.presentation.new_stopwatch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -11,17 +14,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import ru.vafeen.domain.database.StopwatchRepository
 import ru.vafeen.domain.domain_models.Stopwatch
+import ru.vafeen.domain.services.StopwatchManager
 import ru.vafeen.domain.utils.launchIO
-import javax.inject.Inject
+import ru.vafeen.presentation.navigation.NavRootIntent
 
 /**
  * ViewModel для управления состоянием создания нового секундомера и взаимодействием с базой данных.
  *
  * @property stopwatchRepository Репозиторий для работы с данными секундомера.
+ * @property stopwatchManager Менеджер логики секундомера.
+ * @property sendRootIntent Функция для отправки навигационных интентов в корневой навигатор.
  */
-@HiltViewModel
-internal class NewStopwatchDataViewModel @Inject constructor(
-    private val stopwatchRepository: StopwatchRepository
+@HiltViewModel(assistedFactory = NewStopwatchDataViewModel.Factory::class)
+internal class NewStopwatchDataViewModel @AssistedInject constructor(
+    private val stopwatchRepository: StopwatchRepository,
+    private val stopwatchManager: StopwatchManager,
+    @Assisted private val sendRootIntent: (NavRootIntent) -> Unit,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(
@@ -46,9 +54,29 @@ internal class NewStopwatchDataViewModel @Inject constructor(
         viewModelScope.launchIO {
             when (intent) {
                 NewStopwatchDataIntent.AddAndStart -> addAndStart()
-                NewStopwatchDataIntent.ChangeState -> changeState()
+                NewStopwatchDataIntent.Toggle -> toggle()
+                NewStopwatchDataIntent.Reset -> makeSthAndUpdate(sth = stopwatchManager::reset)
+                NewStopwatchDataIntent.Delete -> delete()
             }
         }
+    }
+
+    /**
+     * Удаляет секундомер из репозитория и возвращается назад по навигации.
+     */
+    private suspend fun delete() {
+        val stopwatch = _state.value.stopwatch
+        sendRootIntent(NavRootIntent.Back)
+        stopwatchRepository.delete(stopwatch)
+    }
+
+    /**
+     * Выполняет преобразование секундомера и обновляет данные в состоянии.
+     *
+     * @param sth Функция преобразования секундомера (например, toggle или reset).
+     */
+    private fun makeSthAndUpdate(sth: (Stopwatch) -> Stopwatch) {
+        _state.update { it.copy(stopwatch = sth(it.stopwatch)) }
     }
 
     /**
@@ -56,15 +84,21 @@ internal class NewStopwatchDataViewModel @Inject constructor(
      */
     private suspend fun addAndStart() {
         val state = _state.value
-        stopwatchRepository.insert(state.stopwatch)
+        val stopwatch = state.stopwatch
+        stopwatchRepository.insert(stopwatch)
+        viewModelScope.launchIO {
+            stopwatchRepository.getById(stopwatch.id).collect { stopwatch ->
+                _state.update { it.copy(stopwatch = stopwatch ?: return@collect) }
+            }
+        }
         _state.update { it.copy(isAddedToDb = true) }
-        changeState()
+        toggle()
     }
 
     /**
      * Переключает состояние секундомера (старт/пауза) и обновляет данные в базе.
      */
-    private suspend fun changeState() {
+    private suspend fun toggle() {
         val currentState = _state.value
         val stopwatch = currentState.stopwatch
         val now = System.currentTimeMillis()
@@ -75,14 +109,10 @@ internal class NewStopwatchDataViewModel @Inject constructor(
             stopwatch.copy(
                 startTime = now - elapsed,
                 stopTime = null
-            ).apply {
-                _state.update { it.copy(stopwatch = this) }
-            }
+            )
         } else {
             // Остановка секундомера с фиксацией времени остановки
-            stopwatch.copy(stopTime = now).apply {
-                _state.update { it.copy(stopwatch = this) }
-            }
+            stopwatch.copy(stopTime = now)
         }
 
         stopwatchRepository.insert(updatedStopwatch)
@@ -125,5 +155,19 @@ internal class NewStopwatchDataViewModel @Inject constructor(
     private fun stopUpdating() {
         realtimeUpdating?.cancel()
         realtimeUpdating = null
+    }
+
+    /**
+     * Фабрика для создания экземпляра ViewModel с внедрением зависимостей.
+     */
+    @AssistedFactory
+    interface Factory {
+        /**
+         * Создает экземпляр ViewModel с функцией отправки навигационных интентов.
+         *
+         * @param sendRootIntent Функция для отправки навигационных интентов.
+         * @return Новый экземпляр [NewStopwatchDataViewModel].
+         */
+        fun create(@Assisted sendRootIntent: (NavRootIntent) -> Unit): NewStopwatchDataViewModel
     }
 }
