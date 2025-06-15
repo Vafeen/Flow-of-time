@@ -14,6 +14,7 @@
         <activity
             android:name="ru.vafeen.presentation.MainActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.ComposeCleanArchMultimoduleExample">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

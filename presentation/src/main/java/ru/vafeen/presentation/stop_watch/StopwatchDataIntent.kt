@@ -14,4 +14,9 @@ internal sealed class StopwatchDataIntent {
      * Интент для сброса секундомера.
      */
     data object Reset : StopwatchDataIntent()
+
+    /**
+     * Интент для удаления секундомера.
+     */
+    data object Delete : StopwatchDataIntent()
 }

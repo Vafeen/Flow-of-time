@@ -21,9 +21,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.presentation.R
-import ru.vafeen.presentation.common.components.CustomIconButton
 import ru.vafeen.presentation.common.components.TextForThisTheme
+import ru.vafeen.presentation.common.components.button.CustomIconButton
 import ru.vafeen.presentation.common.utils.subtractDuration
+import ru.vafeen.presentation.common.utils.suitableColor
 import ru.vafeen.presentation.common.utils.toHHMMSS
 import ru.vafeen.presentation.ui.theme.AppTheme
 import ru.vafeen.presentation.ui.theme.FontSize
@@ -105,7 +106,8 @@ internal fun StopwatchListItem(
                                 if (stopwatch.stopTime != null) R.drawable.resume else R.drawable.pause
                             ), contentDescription = stringResource(
                                 if (stopwatch.stopTime != null) R.string.resume else R.string.pause
-                            )
+                            ),
+                            tint = AppTheme.colors.mainColor.suitableColor()
                         )
                     })
 
@@ -116,7 +118,8 @@ internal fun StopwatchListItem(
                         }, icon = {
                             Icon(
                                 painter = painterResource(R.drawable.reset),
-                                contentDescription = stringResource(R.string.reset)
+                                contentDescription = stringResource(R.string.reset),
+                                tint = AppTheme.colors.mainColor.suitableColor()
                             )
                         })
                     }

@@ -39,6 +39,9 @@ internal sealed interface Screen {
     @Serializable
     data class StopwatchData(val id: Long) : Screen
 
+    /**
+     * Экран для создания нового секундомера.
+     */
     @Serializable
     data object NewStopWatchData : Screen
 }
@@ -49,7 +52,7 @@ internal sealed interface Screen {
 internal val screenWithBottomBar = listOf(Screen.Stopwatches, Screen.Timers)
 
 /**
- * Функция для определения экрана [Screen] по маршруту навигации [NavBackStackEntry].
+ * Определяет экран [Screen] по маршруту навигации из [NavBackStackEntry].
  *
  * @param navBackStackEntry Текущая запись в стеке навигации.
  * @return Соответствующий экран [Screen] или null, если маршрут не распознан.
