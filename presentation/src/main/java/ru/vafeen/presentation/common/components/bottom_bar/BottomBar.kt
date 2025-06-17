@@ -46,6 +46,7 @@ internal fun BottomBar(
                 colors = NavigationBarItemDefaults.colors(
                     indicatorColor = Color.Transparent,
                     disabledIconColor = Color.Black,
+                    unselectedIconColor = Color.Black.copy(alpha = 0.6f) // todo (custom theme)
                 ),
                 icon = {
                     Icon(

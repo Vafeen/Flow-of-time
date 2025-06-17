@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "00f24702f0939ce47cc9a66aaacd6abf",
+    "identityHash": "6fc1141b12c52119ef1dfb9f2342ae5b",
     "entities": [
       {
         "tableName": "stopwatches",
@@ -41,7 +41,7 @@
       },
       {
         "tableName": "timers",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `ldt` INTEGER NOT NULL, `isWork` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `initialDurationMillis` INTEGER NOT NULL, `remainingTimeMillis` INTEGER NOT NULL, `isRunning` INTEGER NOT NULL, `currentStartTime` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -56,16 +56,27 @@
             "notNull": true
           },
           {
-            "fieldPath": "ldt",
-            "columnName": "ldt",
+            "fieldPath": "initialDurationMillis",
+            "columnName": "initialDurationMillis",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "isWork",
-            "columnName": "isWork",
+            "fieldPath": "remainingTimeMillis",
+            "columnName": "remainingTimeMillis",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "isRunning",
+            "columnName": "isRunning",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "currentStartTime",
+            "columnName": "currentStartTime",
+            "affinity": "INTEGER"
           }
         ],
         "primaryKey": {
@@ -78,7 +89,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '00f24702f0939ce47cc9a66aaacd6abf')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6fc1141b12c52119ef1dfb9f2342ae5b')"
     ]
   }
 }

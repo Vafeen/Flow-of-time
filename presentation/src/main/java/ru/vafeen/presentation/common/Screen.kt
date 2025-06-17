@@ -26,10 +26,10 @@ internal sealed interface Screen {
     /**
      * Экран с деталями таймера.
      *
-     * @property name Название таймера, передаваемое для отображения или редактирования.
+     * @property id Идентификатор таймера, передаваемый для загрузки данных.
      */
     @Serializable
-    data class TimerData(val name: String) : Screen
+    data class TimerData(val id: Long) : Screen
 
     /**
      * Экран с деталями секундомера.
@@ -43,7 +43,13 @@ internal sealed interface Screen {
      * Экран для создания нового секундомера.
      */
     @Serializable
-    data object NewStopWatchData : Screen
+    data object NewStopwatchData : Screen
+
+    /**
+     * Экран для создания нового таймера.
+     */
+    @Serializable
+    data object NewTimerData : Screen
 }
 
 /**
@@ -64,7 +70,8 @@ internal fun getScreenFromRoute(navBackStackEntry: NavBackStackEntry): Screen? {
         route == Screen.Timers::class.qualifiedName -> Screen.Timers
         route.startsWith("${Screen.TimerData::class.qualifiedName}") -> navBackStackEntry.toRoute<Screen.TimerData>()
         route.startsWith("${Screen.StopwatchData::class.qualifiedName}") -> navBackStackEntry.toRoute<Screen.StopwatchData>()
-        route == Screen.NewStopWatchData::class.qualifiedName -> Screen.NewStopWatchData
+        route == Screen.NewStopwatchData::class.qualifiedName -> Screen.NewStopwatchData
+        route == Screen.NewTimerData::class.qualifiedName -> Screen.NewTimerData
         else -> null
     }
 }
