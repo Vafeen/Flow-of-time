@@ -5,8 +5,10 @@
     <string name="resume">Продолжить</string>
     <string name="pause">Остановить</string>
     <string name="add_stopwatch">Добавить секундомер</string>
+    <string name="add_timer">Добавить таймер</string>
     <string name="add_to_db">Добавить</string>
     <string name="stopwatches">Секундомеры</string>
+    <string name="timers">Таймеры</string>
     <string name="reset">Сбросить</string>
     <string name="delete">Удалить</string>
     <string name="undo">Отменить</string>

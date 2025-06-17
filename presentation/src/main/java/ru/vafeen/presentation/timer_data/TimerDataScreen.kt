@@ -14,6 +14,6 @@ internal fun TimerDataScreen(
     timerData: Screen.TimerData
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
-        Text("time ${timerData.name}")
+        Text("time ${timerData.id}")
     }
 }

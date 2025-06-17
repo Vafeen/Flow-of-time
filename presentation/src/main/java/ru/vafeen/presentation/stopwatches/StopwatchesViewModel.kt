@@ -148,7 +148,7 @@ internal class StopwatchesViewModel @AssistedInject constructor(
     /**
      * Обновляет состояние автоматического обновления времени в UI.
      *
-     * @param shouldBeRunning Флаг, указывающий, должен ли таймер обновляться.
+     * @param shouldBeRunning Флаг, указывающий, должен ли секундомер обновляться.
      */
     private fun updateStopwatchState(shouldBeRunning: Boolean) {
         if (shouldBeRunning) {
@@ -166,7 +166,7 @@ internal class StopwatchesViewModel @AssistedInject constructor(
      * Инициирует навигацию на экран создания нового секундомера.
      */
     private fun addNew() {
-        sendRootIntent(NavRootIntent.NavigateToScreen(Screen.NewStopWatchData))
+        sendRootIntent(NavRootIntent.NavigateToScreen(Screen.NewStopwatchData))
     }
 
     /**

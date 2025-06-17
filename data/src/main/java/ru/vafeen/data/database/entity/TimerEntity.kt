@@ -2,22 +2,25 @@ package ru.vafeen.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalDateTime
 
 /**
  * Сущность базы данных, представляющая таймер.
  *
- * Используется для хранения информации о таймерах в таблице "timers".
+ * Используется для хранения информации о состоянии таймеров в таблице "timers".
  *
- * @property id Уникальный идентификатор таймера.
- * @property name Название или описание таймера.
- * @property ldt Временная метка (LocalDateTime), связанная с таймером (например, время создания или последнего обновления).
- * @property isWork Флаг, указывающий, находится ли таймер в рабочем состоянии (true) или нет (false).
+ * @property id Уникальный идентификатор таймера. Генерируется автоматически при вставке в базу.
+ * @property name Название или метка таймера.
+ * @property initialDurationMillis Изначально установленная длительность таймера в миллисекундах.
+ * @property remainingTimeMillis Текущее оставшееся время таймера в миллисекундах.
+ * @property isRunning Флаг, указывающий на процесс работы таймера (true — таймер запущен, false — остановлен или на паузе).
+ * @property currentStartTime Временная метка (в миллисекундах с эпохи), отражающая момент последнего запуска таймера, либо null, если таймер не запущен или на паузе.
  */
 @Entity(tableName = "timers")
-data class TimerEntity(
+internal data class TimerEntity(
     @PrimaryKey val id: Long,
     val name: String,
-    val ldt: LocalDateTime,
-    val isWork: Boolean,
+    val initialDurationMillis: Long,
+    val remainingTimeMillis: Long,
+    val isRunning: Boolean,
+    val currentStartTime: Long? = null,
 )
