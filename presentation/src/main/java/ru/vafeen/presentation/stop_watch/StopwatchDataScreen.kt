@@ -22,7 +22,7 @@ internal fun StopwatchDataScreen(
     stopwatchData: Screen.StopwatchData
 ) {
 
-    val viewModel =
+    val viewModel: StopwatchDataViewModel =
         hiltViewModel<StopwatchDataViewModel, StopwatchDataViewModel.Factory> { factory ->
             factory.create(
                 id = stopwatchData.id,
@@ -31,7 +31,7 @@ internal fun StopwatchDataScreen(
         }
 
     // Подписка на состояние ViewModel
-    val state by viewModel.state.collectAsState()
+    val state: StopwatchDataState by viewModel.state.collectAsState()
     state.stopwatch?.let { stopwatch ->
         StopwatchComponent(
             stopwatch = stopwatch,
@@ -39,7 +39,18 @@ internal fun StopwatchDataScreen(
             onToggle = { viewModel.handleIntent(StopwatchDataIntent.Toggle) },
             onReset = { viewModel.handleIntent(StopwatchDataIntent.Reset) },
             onDelete = { viewModel.handleIntent(StopwatchDataIntent.Delete) },
-            isAddedToDb = true
+            isAddedToDb = true,
+            renamingDialogValue = stopwatch.name,
+            isRenamingDialogShowed = state.isRenameDialogShowed,
+            onRenameDialogShow = {
+                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog)
+            },
+            onDismissRequest = {
+                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog)
+            },
+            onSaveRenaming = {
+                viewModel.handleIntent(StopwatchDataIntent.SaveRenaming(it))
+            }
         )
     }
 }

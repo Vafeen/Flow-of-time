@@ -1,6 +1,7 @@
 package ru.vafeen.presentation.common.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,26 +30,45 @@ import ru.vafeen.presentation.ui.theme.FontSize
 /**
  * Компонент для отображения секундомера с визуализацией времени и кнопками управления.
  *
- * @param isAddedToDb Флаг, указывающий, добавлен ли секундомер в базу данных.
+ * @param isAddedToDb Флаг, указывающий на процесс добавления секундомера в базу данных.
  * @param stopwatch Объект секундомера с текущими данными.
  * @param timeNow Текущее системное время в миллисекундах для вычислений.
- * @param onToggle Лямбда, вызываемая при переключении состояния секундомера (старт/пауза).
- * @param onReset Опциональная лямбда для сброса секундомера.
- * @param onDelete Опциональная лямбда для удаления секундомера.
+ * @param renamingDialogValue Значение в диалоге переименования.
+ * @param isRenamingDialogShowed Флаг, указывающий на процесс отображения диалога переименования.
+ * @param onRenameDialogShow Лямбда для запуска процесса отображения диалога переименования.
+ * @param onDismissRequest Лямбда для запуска процесса закрытия диалога.
+ * @param onSaveRenaming Лямбда для запуска процесса сохранения нового имени секундомера.
+ * @param onToggle Лямбда для запуска процесса переключения состояния секундомера (старт/пауза).
+ * @param onReset Опциональная лямбда для запуска процесса сброса секундомера.
+ * @param onDelete Опциональная лямбда для запуска процесса удаления секундомера.
  */
 @Composable
 internal fun StopwatchComponent(
     isAddedToDb: Boolean,
     stopwatch: Stopwatch,
     timeNow: Long,
+    renamingDialogValue: String,
+    isRenamingDialogShowed: Boolean,
+    onRenameDialogShow: () -> Unit,
+    onDismissRequest: () -> Unit,
+    onSaveRenaming: (String) -> Unit,
     onToggle: () -> Unit,
     onReset: (() -> Unit)? = null,
     onDelete: (() -> Unit)? = null,
 ) {
+    if (isRenamingDialogShowed) {
+        RenamingDialog(
+            value = renamingDialogValue,
+            onDismissRequest = onDismissRequest,
+            onSave = onSaveRenaming
+        )
+    }
     Scaffold(
         containerColor = Color.Transparent, topBar = {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onRenameDialogShow),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
