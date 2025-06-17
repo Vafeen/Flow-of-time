@@ -24,4 +24,6 @@ internal sealed class NewStopwatchDataIntent {
      * Интент для удаления секундомера.
      */
     data object Delete : NewStopwatchDataIntent()
+    data object ToggleShowingRenamingDialog : NewStopwatchDataIntent()
+    data class SaveRenaming(val newName: String) : NewStopwatchDataIntent()
 }

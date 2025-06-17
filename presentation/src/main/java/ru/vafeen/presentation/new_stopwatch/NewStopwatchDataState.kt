@@ -13,4 +13,5 @@ internal data class NewStopwatchDataState(
     val isAddedToDb: Boolean = false,
     val stopwatch: Stopwatch,
     val timeNow: Long,
+    val isRenameDialogShowed: Boolean = false,
 )

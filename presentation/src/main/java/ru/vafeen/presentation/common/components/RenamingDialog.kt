@@ -1,0 +1,33 @@
+package ru.vafeen.presentation.common.components
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.Button
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.window.Dialog
+
+@Composable
+internal fun RenamingDialog(value: String, onDismissRequest: () -> Unit, onSave: (String) -> Unit) {
+    var text by remember { mutableStateOf(value) }
+    Dialog(onDismissRequest = onDismissRequest) {
+        Column {
+            TextField(value = text, onValueChange = { text = it })
+            Row {
+                Button(onClick = onDismissRequest) {
+                    TextForThisTheme(text = "cancel")
+                }
+                Button(onClick = {
+                    onSave(text)
+                    onDismissRequest()
+                }) {
+                    TextForThisTheme(text = "apply")
+                }
+            }
+        }
+    }
+}

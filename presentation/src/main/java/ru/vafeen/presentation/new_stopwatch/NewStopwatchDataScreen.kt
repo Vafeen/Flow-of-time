@@ -18,11 +18,11 @@ import ru.vafeen.presentation.navigation.NavRootIntent
  */
 @Composable
 internal fun NewStopwatchDataScreen(sendRootIntent: (NavRootIntent) -> Unit) {
-    val viewModel =
+    val viewModel: NewStopwatchDataViewModel =
         hiltViewModel<NewStopwatchDataViewModel, NewStopwatchDataViewModel.Factory>(creationCallback = { factory ->
             factory.create(sendRootIntent)
         })
-    val state by viewModel.state.collectAsState()
+    val state: NewStopwatchDataState by viewModel.state.collectAsState()
 
     StopwatchComponent(
         stopwatch = state.stopwatch,
@@ -39,6 +39,17 @@ internal fun NewStopwatchDataScreen(sendRootIntent: (NavRootIntent) -> Unit) {
         onDelete = if (state.isAddedToDb) {
             { viewModel.handleIntent(NewStopwatchDataIntent.Delete) }
         } else null,
-        isAddedToDb = state.isAddedToDb
+        isAddedToDb = state.isAddedToDb,
+        renamingDialogValue = state.stopwatch.name,
+        onRenameDialogShow = {
+            viewModel.handleIntent(NewStopwatchDataIntent.ToggleShowingRenamingDialog)
+        },
+        isRenamingDialogShowed = state.isRenameDialogShowed,
+        onDismissRequest = {
+            viewModel.handleIntent(NewStopwatchDataIntent.ToggleShowingRenamingDialog)
+        },
+        onSaveRenaming = {
+            viewModel.handleIntent(NewStopwatchDataIntent.SaveRenaming(it))
+        }
     )
 }

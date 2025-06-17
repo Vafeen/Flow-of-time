@@ -33,13 +33,13 @@ internal fun StopwatchDataScreen(
     // Подписка на состояние ViewModel
     val state by viewModel.state.collectAsState()
     state.stopwatch?.let { stopwatch ->
-        StopwatchComponent(
-            stopwatch = stopwatch,
-            timeNow = state.timeNow,
-            onToggle = { viewModel.handleIntent(StopwatchDataIntent.Toggle) },
-            onReset = { viewModel.handleIntent(StopwatchDataIntent.Reset) },
-            onDelete = { viewModel.handleIntent(StopwatchDataIntent.Delete) },
-            isAddedToDb = true
-        )
+//        StopwatchComponent(
+//            stopwatch = stopwatch,
+//            timeNow = state.timeNow,
+//            onToggle = { viewModel.handleIntent(StopwatchDataIntent.Toggle) },
+//            onReset = { viewModel.handleIntent(StopwatchDataIntent.Reset) },
+//            onDelete = { viewModel.handleIntent(StopwatchDataIntent.Delete) },
+//            isAddedToDb = true
+//        )
     }
 }

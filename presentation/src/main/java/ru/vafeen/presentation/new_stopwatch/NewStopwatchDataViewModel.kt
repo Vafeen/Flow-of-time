@@ -1,5 +1,7 @@
 package ru.vafeen.presentation.new_stopwatch
 
+import android.R.id.toggle
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
@@ -17,6 +19,7 @@ import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.services.StopwatchManager
 import ru.vafeen.domain.utils.launchIO
 import ru.vafeen.presentation.navigation.NavRootIntent
+import java.nio.file.Files.delete
 
 /**
  * ViewModel для управления состоянием создания нового секундомера и взаимодействием с базой данных.
@@ -57,6 +60,25 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
                 NewStopwatchDataIntent.Toggle -> toggle()
                 NewStopwatchDataIntent.Reset -> makeSthAndUpdate(sth = stopwatchManager::reset)
                 NewStopwatchDataIntent.Delete -> delete()
+                NewStopwatchDataIntent.ToggleShowingRenamingDialog -> toggleShowingRenamingDialog()
+                is NewStopwatchDataIntent.SaveRenaming -> saveRenaming(intent.newName)
+            }
+        }
+    }
+
+    private fun toggleShowingRenamingDialog() {
+        _state.update {
+            it.copy(isRenameDialogShowed = !it.isRenameDialogShowed)
+        }
+    }
+
+    private suspend fun saveRenaming(newName: String) {
+        val state = _state.value
+        if (state.isAddedToDb) {
+            stopwatchRepository.insert(state.stopwatch.copy(name = newName))
+        } else {
+            _state.update {
+                it.copy(stopwatch = it.stopwatch.copy(name = newName))
             }
         }
     }

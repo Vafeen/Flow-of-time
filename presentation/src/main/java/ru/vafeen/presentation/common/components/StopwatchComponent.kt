@@ -1,6 +1,7 @@
 package ru.vafeen.presentation.common.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,14 +42,28 @@ internal fun StopwatchComponent(
     isAddedToDb: Boolean,
     stopwatch: Stopwatch,
     timeNow: Long,
+    renamingDialogValue: String,
+    isRenamingDialogShowed: Boolean,
+    onRenameDialogShow: () -> Unit,
+    onDismissRequest: () -> Unit,
+    onSaveRenaming: (String) -> Unit,
     onToggle: () -> Unit,
     onReset: (() -> Unit)? = null,
     onDelete: (() -> Unit)? = null,
 ) {
+    if (isRenamingDialogShowed) {
+        RenamingDialog(
+            value = renamingDialogValue,
+            onDismissRequest = onDismissRequest,
+            onSave = onSaveRenaming
+        )
+    }
     Scaffold(
         containerColor = Color.Transparent, topBar = {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onClick = onRenameDialogShow),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
