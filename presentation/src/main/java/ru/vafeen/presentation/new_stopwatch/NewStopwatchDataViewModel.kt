@@ -1,7 +1,5 @@
 package ru.vafeen.presentation.new_stopwatch
 
-import android.R.id.toggle
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.assisted.Assisted
@@ -19,7 +17,6 @@ import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.services.StopwatchManager
 import ru.vafeen.domain.utils.launchIO
 import ru.vafeen.presentation.navigation.NavRootIntent
-import java.nio.file.Files.delete
 
 /**
  * ViewModel для управления состоянием создания нового секундомера и взаимодействием с базой данных.
@@ -49,7 +46,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     private var realtimeUpdating: Job? = null
 
     /**
-     * Обрабатывает пользовательские интенты для управления секундомером.
+     * Обработка пользовательских интентов для управления секундомером.
      *
      * @param intent Интент, определяющий действие пользователя.
      */
@@ -65,13 +62,12 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
             }
         }
     }
-
-    private fun toggleShowingRenamingDialog() {
-        _state.update {
-            it.copy(isRenameDialogShowed = !it.isRenameDialogShowed)
-        }
-    }
-
+    /**
+     * Сохранение нового имени для секундомера.
+     * Если уже сохранен в бд, то обновление там, если нет, только на UI.
+     *
+     * @property newName новое имя секундомера.
+     */
     private suspend fun saveRenaming(newName: String) {
         val state = _state.value
         if (state.isAddedToDb) {
@@ -84,7 +80,17 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Удаляет секундомер из репозитория и возвращается назад по навигации.
+     * Переключение видимости диалога переименования секундомера.
+     */
+    private fun toggleShowingRenamingDialog() {
+        _state.update {
+            it.copy(isRenameDialogShowed = !it.isRenameDialogShowed)
+        }
+    }
+
+
+    /**
+     * Удаление секундомера из репозитория и возврат назад по навигации.
      */
     private suspend fun delete() {
         val stopwatch = _state.value.stopwatch
@@ -93,7 +99,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Выполняет преобразование секундомера и обновляет данные в состоянии.
+     * Выполнение преобразования секундомера и обновление данных в состоянии.
      *
      * @param sth Функция преобразования секундомера (например, toggle или reset).
      */
@@ -102,7 +108,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Добавляет новый секундомер в базу данных и запускает его.
+     * Добавление нового секундомера в базу данных и запуск его.
      */
     private suspend fun addAndStart() {
         val state = _state.value
@@ -118,7 +124,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Переключает состояние секундомера (старт/пауза) и обновляет данные в базе.
+     * Переключение состояния секундомера (старт/пауза) и обновление данных в базе.
      */
     private suspend fun toggle() {
         val currentState = _state.value
@@ -142,7 +148,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Управляет состоянием автоматического обновления таймера.
+     * Управление состоянием автоматического обновления таймера.
      *
      * @param shouldBeRunning Флаг, указывающий, должен ли таймер обновляться.
      */
@@ -155,7 +161,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Запускает периодическое обновление времени в UI.
+     * Запуск периодического обновления времени в UI.
      * Обновления происходят каждую секунду до остановки.
      */
     private fun startUpdating() {
@@ -172,7 +178,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Останавливает обновление времени в UI.
+     * Остановка обновления времени в UI.
      */
     private fun stopUpdating() {
         realtimeUpdating?.cancel()
@@ -185,7 +191,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory {
         /**
-         * Создает экземпляр ViewModel с функцией отправки навигационных интентов.
+         * Создание экземпляра ViewModel с функцией отправки навигационных интентов.
          *
          * @param sendRootIntent Функция для отправки навигационных интентов.
          * @return Новый экземпляр [NewStopwatchDataViewModel].

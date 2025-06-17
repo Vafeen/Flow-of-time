@@ -11,7 +11,18 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 import ru.vafeen.presentation.ui.theme.AppTheme
 
-
+/**
+ * Компонент для отображения текста с использованием темы приложения.
+ *
+ * @param text Текст для отображения.
+ * @param modifier Модификатор для настройки внешнего вида и поведения компонента.
+ * @param fontSize Размер шрифта текста.
+ * @param textAlign Выравнивание текста.
+ * @param style Стиль текста.
+ * @param overflow Поведение при переполнении текста.
+ * @param maxLines Максимальное количество строк для отображения текста.
+ * @param textDecoration Оформление текста (например, перечеркивание).
+ */
 @Composable
 internal fun TextForThisTheme(
     text: String,

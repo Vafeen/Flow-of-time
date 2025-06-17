@@ -11,6 +11,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Dialog
 
+/**
+ * Диалог для переименования с полем ввода и кнопками подтверждения или отмены.
+ *
+ * @param value Текущее значение текста в поле ввода.
+ * @param onDismissRequest Лямбда для запуска процесса закрытия диалога.
+ * @param onSave Лямбда для запуска процесса сохранения нового имени.
+ */
 @Composable
 internal fun RenamingDialog(value: String, onDismissRequest: () -> Unit, onSave: (String) -> Unit) {
     var text by remember { mutableStateOf(value) }

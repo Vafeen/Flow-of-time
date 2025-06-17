@@ -55,7 +55,28 @@ internal class StopwatchDataViewModel @AssistedInject constructor(
                 StopwatchDataIntent.Toggle -> makeSthAndUpdate(sth = stopwatchManager::toggle)
                 StopwatchDataIntent.Reset -> makeSthAndUpdate(sth = stopwatchManager::reset)
                 StopwatchDataIntent.Delete -> delete()
+                is StopwatchDataIntent.SaveRenaming -> saveRenaming(intent.newName)
+                StopwatchDataIntent.ToggleShowingRenamingDialog -> toggleShowingRenamingDialog()
             }
+        }
+    }
+
+    /**
+     * Сохранение нового имени для секундомера
+     *
+     * @property newName новое имя секундомера
+     */
+    private suspend fun saveRenaming(newName: String) {
+        val stopwatch: Stopwatch = _state.value.stopwatch ?: return
+        stopwatchRepository.insert(stopwatch.copy(name = newName))
+    }
+
+    /**
+     * Переключение видимости диалога переименования секундомера.
+     */
+    private fun toggleShowingRenamingDialog() {
+        _state.update {
+            it.copy(isRenameDialogShowed = !it.isRenameDialogShowed)
         }
     }
 
