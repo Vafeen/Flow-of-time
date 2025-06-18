@@ -127,7 +127,10 @@ internal fun NavRoot() {
                 NewStopwatchDataScreen(sendRootIntent = viewModel::handleIntent)
             }
             composable<Screen.NewTimerData> {
-
+                TimerDataScreen(
+                    sendRootIntent = viewModel::handleIntent,
+                    timerData = it.toRoute()
+                )
             }
         }
     }

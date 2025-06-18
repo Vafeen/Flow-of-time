@@ -6,7 +6,7 @@ import ru.vafeen.domain.domain_models.Timer
 /**
  * Интерфейс репозитория для работы с таймерами.
  *
- * Определяет операции для получения, добавления и удаления таймеров.
+ * Определяет операции для получения, добавления, удаления и поиска таймеров.
  */
 interface TimerRepository {
 
@@ -30,4 +30,12 @@ interface TimerRepository {
      * @param timer Модель таймера для удаления.
      */
     suspend fun delete(timer: Timer)
+
+    /**
+     * Получить таймер по его уникальному идентификатору.
+     *
+     * @param id Идентификатор таймера.
+     * @return [Flow] с моделью таймера [Timer], если найден, или null, если отсутствует.
+     */
+    suspend fun getById(id: Long): Flow<Timer?>
 }
