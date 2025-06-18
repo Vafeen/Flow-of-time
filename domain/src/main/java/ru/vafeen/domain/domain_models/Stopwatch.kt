@@ -19,7 +19,7 @@ data class Stopwatch(
             val timeNow = System.currentTimeMillis()
             return Stopwatch(
                 id = timeNow,
-                name = "stopwatch $timeNow",
+                name = "Stopwatch $timeNow",
                 startTime = timeNow,
                 stopTime = timeNow
             )
