@@ -24,7 +24,7 @@ import ru.vafeen.presentation.common.components.bottom_bar.BottomBar
 import ru.vafeen.presentation.common.components.bottom_bar.BottomBarItem
 import ru.vafeen.presentation.common.getScreenFromRoute
 import ru.vafeen.presentation.new_stopwatch.NewStopwatchDataScreen
-import ru.vafeen.presentation.stop_watch.StopwatchDataScreen
+import ru.vafeen.presentation.stopwatch.StopwatchDataScreen
 import ru.vafeen.presentation.stopwatches.StopwatchesScreen
 import ru.vafeen.presentation.timer.TimerDataScreen
 import ru.vafeen.presentation.timers.TimersScreen

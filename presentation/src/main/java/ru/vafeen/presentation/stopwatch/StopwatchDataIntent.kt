@@ -1,4 +1,4 @@
-package ru.vafeen.presentation.stop_watch
+package ru.vafeen.presentation.stopwatch
 
 /**
  * Интенты (намерения) для управления состоянием секундомера.

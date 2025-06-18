@@ -1,4 +1,4 @@
-package ru.vafeen.presentation.stop_watch
+package ru.vafeen.presentation.stopwatch
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
