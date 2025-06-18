@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
 import ru.vafeen.domain.database.TimerRepository
 import ru.vafeen.domain.domain_models.Timer
 import ru.vafeen.domain.services.TimerManager
 import ru.vafeen.domain.utils.launchIO
+import ru.vafeen.presentation.common.TimeConstants
 import ru.vafeen.presentation.navigation.NavRootIntent
 
 /**
@@ -148,7 +148,7 @@ internal class TimerDataViewModel @AssistedInject constructor(
         realtimeUpdating = viewModelScope.launchIO {
             while (isActive) {
                 updating(System.currentTimeMillis())
-                delay(1000)
+                delay(TimeConstants.DELAY_BETWEEN_UI_UPDATES)
             }
         }
     }

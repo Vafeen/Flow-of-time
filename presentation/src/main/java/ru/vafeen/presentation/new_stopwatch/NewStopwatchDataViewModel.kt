@@ -16,6 +16,7 @@ import ru.vafeen.domain.database.StopwatchRepository
 import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.services.StopwatchManager
 import ru.vafeen.domain.utils.launchIO
+import ru.vafeen.presentation.common.TimeConstants
 import ru.vafeen.presentation.navigation.NavRootIntent
 
 /**
@@ -172,7 +173,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
                 _state.update {
                     it.copy(timeNow = System.currentTimeMillis())
                 }
-                delay(1000)
+                delay(TimeConstants.DELAY_BETWEEN_UI_UPDATES)
             }
         }
     }
