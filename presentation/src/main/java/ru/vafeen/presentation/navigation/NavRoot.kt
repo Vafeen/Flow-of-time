@@ -26,7 +26,7 @@ import ru.vafeen.presentation.common.getScreenFromRoute
 import ru.vafeen.presentation.new_stopwatch.NewStopwatchDataScreen
 import ru.vafeen.presentation.stop_watch.StopwatchDataScreen
 import ru.vafeen.presentation.stopwatches.StopwatchesScreen
-import ru.vafeen.presentation.timer_data.TimerDataScreen
+import ru.vafeen.presentation.timer.TimerDataScreen
 import ru.vafeen.presentation.timers.TimersScreen
 import ru.vafeen.presentation.ui.theme.AppTheme
 

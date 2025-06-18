@@ -1,4 +1,4 @@
-package ru.vafeen.presentation.timer_data
+package ru.vafeen.presentation.timer
 
 import ru.vafeen.domain.domain_models.Timer
 

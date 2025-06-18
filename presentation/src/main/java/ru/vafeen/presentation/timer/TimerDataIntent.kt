@@ -1,4 +1,4 @@
-package ru.vafeen.presentation.timer_data
+package ru.vafeen.presentation.timer
 
 /**
  * Интенты (намерения) для управления состоянием таймера.

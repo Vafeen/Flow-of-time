@@ -1,4 +1,4 @@
-package ru.vafeen.presentation.timer_data
+package ru.vafeen.presentation.timer
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
