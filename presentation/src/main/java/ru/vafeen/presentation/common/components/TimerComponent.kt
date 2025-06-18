@@ -32,6 +32,21 @@ import ru.vafeen.presentation.ui.theme.AppTheme
 import ru.vafeen.presentation.ui.theme.FontSize
 import kotlin.math.absoluteValue
 
+/**
+ * Компонент для отображения и управления таймером.
+ *
+ * @param isAddedToDb Флаг, указывающий добавлен ли таймер в базу данных
+ * @param timer Объект таймера с текущим состоянием
+ * @param timeNow Текущее системное время в миллисекундах
+ * @param renamingDialogValue Текущее значение в диалоге переименования
+ * @param isRenamingDialogShowed Флаг видимости диалога переименования
+ * @param onRenameDialogShow Обработчик открытия диалога переименования
+ * @param onDismissRequest Обработчик закрытия диалога
+ * @param onSaveRenaming Обработчик сохранения нового имени
+ * @param onToggle Обработчик запуска/паузы таймера
+ * @param onReset Опциональный обработчик сброса таймера
+ * @param onDelete Опциональный обработчик удаления таймера
+ */
 @Composable
 internal fun TimerComponent(
     isAddedToDb: Boolean,
@@ -46,6 +61,7 @@ internal fun TimerComponent(
     onReset: (() -> Unit)? = null,
     onDelete: (() -> Unit)? = null,
 ) {
+    // Диалог переименования
     if (isRenamingDialogShowed) {
         RenamingDialog(
             value = renamingDialogValue,
@@ -62,7 +78,7 @@ internal fun TimerComponent(
     val remainingMillis = (timer.remainingTimeMillis - elapsedMillis).withoutMillis()
     val isTimeNegative = remainingMillis < 0
     val progress = if (timer.initialDurationMillis > 0) {
-        1f - (remainingMillis.toFloat() / timer.initialDurationMillis.toFloat())
+        (remainingMillis.toFloat() / timer.initialDurationMillis.toFloat()).coerceIn(0f, 1f)
     } else 0f
 
     val timeColor = if (isTimeNegative) AppTheme.colors.error else AppTheme.colors.text
@@ -71,6 +87,7 @@ internal fun TimerComponent(
     Scaffold(
         containerColor = Color.Transparent,
         topBar = {
+            // Шапка с названием таймера
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -87,6 +104,7 @@ internal fun TimerComponent(
             Spacer(modifier = Modifier.height(20.dp))
         },
         bottomBar = {
+            // Панель управления таймером
             TimerButtons(
                 modifier = Modifier.fillMaxWidth(),
                 timer = timer,
@@ -111,28 +129,34 @@ internal fun TimerComponent(
                     .fillMaxWidth()
                     .height(300.dp)
             ) {
-                // Фоновый круг (полная длительность)
+                // Основной круг прогресса
                 Canvas(modifier = Modifier.matchParentSize()) {
-                    val radius = size.minDimension / 2 - 10
-                    drawCircle(
-                        color = Color.Gray.copy(alpha = 0.3f),
-                        radius = radius,
-                        style = Stroke(width = 10f)
-                    )
-                }
+                    val strokeWidth = 12f
+                    val radius = size.minDimension / 2 - strokeWidth / 2
 
-                // Прогресс таймера (заполняющаяся дуга)
-                Canvas(modifier = Modifier.matchParentSize()) {
-                    val strokeWidth = 10f
-                    val radius = size.minDimension / 2 - 10 - strokeWidth / 2
-
+                    // Фон (серая часть)
                     withTransform({
-                        rotate(-90f, center) // Начинаем с верхней точки
+                        rotate(-90f, center)
+                    }) {
+                        drawArc(
+                            color = Color.Gray.copy(alpha = 0.3f),
+                            startAngle = 0f,
+                            sweepAngle = 360f * (1f - progress),
+                            useCenter = false,
+                            topLeft = center - Offset(radius, radius),
+                            size = Size(radius * 2, radius * 2),
+                            style = Stroke(width = strokeWidth)
+                        )
+                    }
+
+                    // Активная часть (цветная)
+                    withTransform({
+                        rotate(-90f, center)
                     }) {
                         drawArc(
                             color = arcColor,
-                            startAngle = 0f,
-                            sweepAngle = 360f * progress.coerceIn(0f, 1f),
+                            startAngle = 360f * (1f - progress),
+                            sweepAngle = 360f * progress,
                             useCenter = false,
                             topLeft = center - Offset(radius, radius),
                             size = Size(radius * 2, radius * 2),
@@ -141,7 +165,7 @@ internal fun TimerComponent(
                     }
                 }
 
-                // Оставшееся время
+                // Отображение оставшегося времени
                 Text(
                     text = buildString {
                         if (isTimeNegative) append("-")
