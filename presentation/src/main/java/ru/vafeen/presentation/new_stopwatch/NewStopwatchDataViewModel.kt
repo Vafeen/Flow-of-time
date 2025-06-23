@@ -16,6 +16,7 @@ import ru.vafeen.domain.database.StopwatchRepository
 import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.services.StopwatchManager
 import ru.vafeen.domain.utils.launchIO
+import ru.vafeen.presentation.common.TimeConstants
 import ru.vafeen.presentation.navigation.NavRootIntent
 
 /**
@@ -57,11 +58,14 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
                 NewStopwatchDataIntent.Toggle -> toggle()
                 NewStopwatchDataIntent.Reset -> makeSthAndUpdate(sth = stopwatchManager::reset)
                 NewStopwatchDataIntent.Delete -> delete()
-                NewStopwatchDataIntent.ToggleShowingRenamingDialog -> toggleShowingRenamingDialog()
+                is NewStopwatchDataIntent.ToggleShowingRenamingDialog ->
+                    toggleShowingRenamingDialog(intent.isShowed)
+
                 is NewStopwatchDataIntent.SaveRenaming -> saveRenaming(intent.newName)
             }
         }
     }
+
     /**
      * Сохранение нового имени для секундомера.
      * Если уже сохранен в бд, то обновление там, если нет, только на UI.
@@ -80,11 +84,13 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Переключение видимости диалога переименования секундомера.
+     * Переключает видимость диалога переименования секундомера.
+     *
+     * @param isShowed Флаг, указывающий, должен ли диалог отображаться.
      */
-    private fun toggleShowingRenamingDialog() {
+    private fun toggleShowingRenamingDialog(isShowed: Boolean) {
         _state.update {
-            it.copy(isRenameDialogShowed = !it.isRenameDialogShowed)
+            it.copy(isRenameDialogShowed = isShowed)
         }
     }
 
@@ -172,7 +178,7 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
                 _state.update {
                     it.copy(timeNow = System.currentTimeMillis())
                 }
-                delay(1000)
+                delay(TimeConstants.DELAY_BETWEEN_UI_UPDATES)
             }
         }
     }

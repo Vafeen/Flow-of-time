@@ -1,4 +1,4 @@
-package ru.vafeen.presentation.stop_watch
+package ru.vafeen.presentation.stopwatch
 
 /**
  * Интенты (намерения) для управления состоянием секундомера.
@@ -19,10 +19,11 @@ internal sealed class StopwatchDataIntent {
      * Интент для удаления секундомера.
      */
     data object Delete : StopwatchDataIntent()
+
     /**
      * Интент для переключения видимости диалога переименования секундомера.
      */
-    data object ToggleShowingRenamingDialog : StopwatchDataIntent()
+    data class ToggleShowingRenamingDialog(val isShowed: Boolean) : StopwatchDataIntent()
 
     /**
      * Интент для сохранения измененного нахвания секундомера

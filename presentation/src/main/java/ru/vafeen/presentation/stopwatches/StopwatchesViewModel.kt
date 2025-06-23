@@ -17,6 +17,7 @@ import ru.vafeen.domain.domain_models.Stopwatch
 import ru.vafeen.domain.services.StopwatchManager
 import ru.vafeen.domain.utils.launchIO
 import ru.vafeen.presentation.common.Screen
+import ru.vafeen.presentation.common.TimeConstants
 import ru.vafeen.presentation.navigation.NavRootIntent
 
 /**
@@ -75,6 +76,9 @@ internal class StopwatchesViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Отменяет режим удаления секундомеров, очищая список выбранных для удаления.
+     */
     private fun undoDeleting() {
         _state.update {
             it.copy(
@@ -189,7 +193,7 @@ internal class StopwatchesViewModel @AssistedInject constructor(
         realtimeUpdating = viewModelScope.launchIO {
             while (isActive) {
                 updating(System.currentTimeMillis())
-                delay(1000)
+                delay(TimeConstants.DELAY_BETWEEN_UI_UPDATES)
             }
         }
     }

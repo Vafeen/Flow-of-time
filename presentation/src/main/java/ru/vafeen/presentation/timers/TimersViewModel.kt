@@ -17,6 +17,7 @@ import ru.vafeen.domain.domain_models.Timer
 import ru.vafeen.domain.services.TimerManager
 import ru.vafeen.domain.utils.launchIO
 import ru.vafeen.presentation.common.Screen
+import ru.vafeen.presentation.common.TimeConstants
 import ru.vafeen.presentation.navigation.NavRootIntent
 
 /**
@@ -226,7 +227,7 @@ internal class TimersViewModel @AssistedInject constructor(
         realtimeUpdating = viewModelScope.launchIO {
             while (isActive) {
                 updating(System.currentTimeMillis())
-                delay(1000)
+                delay(TimeConstants.DELAY_BETWEEN_UI_UPDATES)
             }
         }
     }

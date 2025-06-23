@@ -11,10 +11,20 @@ package ru.vafeen.domain.domain_models
  * @property startTime Временная метка запуска таймера в миллисекундах с эпохи, или null если таймер не запущен.
  */
 data class Timer(
-    val id: Long,
-    val name: String,
-    val initialDurationMillis: Long,
-    val remainingTimeMillis: Long,
-    val isRunning: Boolean,
+    val id: Long = 0L,
+    val name: String = "Timer ${System.currentTimeMillis()}",
+    val initialDurationMillis: Long = 0L,
+    val remainingTimeMillis: Long = 0L,
+    val isRunning: Boolean = false,
     val startTime: Long? = null,
-)
+) {
+    companion object {
+        /**
+         * Создает новый экземпляр таймера с нулевой длительностью и остановленным состоянием.
+         * Время отображается как 00:00:00.
+         *
+         * @return Новый таймер с начальными значениями.
+         */
+        fun newInstance(): Timer = Timer()
+    }
+}

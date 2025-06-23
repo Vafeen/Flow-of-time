@@ -1,4 +1,4 @@
-package ru.vafeen.presentation.stop_watch
+package ru.vafeen.presentation.stopwatch
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -43,13 +43,13 @@ internal fun StopwatchDataScreen(
             renamingDialogValue = stopwatch.name,
             isRenamingDialogShowed = state.isRenameDialogShowed,
             onRenameDialogShow = {
-                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog)
+                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog(isShowed = true))
             },
             onDismissRequest = {
-                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog)
+                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog(isShowed = false))
             },
             onSaveRenaming = {
-                viewModel.handleIntent(StopwatchDataIntent.SaveRenaming(it))
+                viewModel.handleIntent(StopwatchDataIntent.SaveRenaming(newName = it))
             }
         )
     }

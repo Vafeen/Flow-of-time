@@ -24,9 +24,10 @@ import ru.vafeen.presentation.common.components.bottom_bar.BottomBar
 import ru.vafeen.presentation.common.components.bottom_bar.BottomBarItem
 import ru.vafeen.presentation.common.getScreenFromRoute
 import ru.vafeen.presentation.new_stopwatch.NewStopwatchDataScreen
-import ru.vafeen.presentation.stop_watch.StopwatchDataScreen
+import ru.vafeen.presentation.new_timer.NewTimerDataScreen
+import ru.vafeen.presentation.stopwatch.StopwatchDataScreen
 import ru.vafeen.presentation.stopwatches.StopwatchesScreen
-import ru.vafeen.presentation.timer_data.TimerDataScreen
+import ru.vafeen.presentation.timer.TimerDataScreen
 import ru.vafeen.presentation.timers.TimersScreen
 import ru.vafeen.presentation.ui.theme.AppTheme
 
@@ -127,7 +128,7 @@ internal fun NavRoot() {
                 NewStopwatchDataScreen(sendRootIntent = viewModel::handleIntent)
             }
             composable<Screen.NewTimerData> {
-
+                NewTimerDataScreen(sendRootIntent = viewModel::handleIntent)
             }
         }
     }
