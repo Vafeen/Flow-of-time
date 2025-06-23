@@ -76,6 +76,9 @@ internal class StopwatchesViewModel @AssistedInject constructor(
         }
     }
 
+    /**
+     * Отменяет режим удаления секундомеров, очищая список выбранных для удаления.
+     */
     private fun undoDeleting() {
         _state.update {
             it.copy(

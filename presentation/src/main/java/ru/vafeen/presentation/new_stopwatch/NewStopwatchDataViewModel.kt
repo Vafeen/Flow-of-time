@@ -84,7 +84,9 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Переключение видимости диалога переименования секундомера.
+     * Переключает видимость диалога переименования секундомера.
+     *
+     * @param isShowed Флаг, указывающий, должен ли диалог отображаться.
      */
     private fun toggleShowingRenamingDialog(isShowed: Boolean) {
         _state.update {

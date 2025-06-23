@@ -73,7 +73,9 @@ internal class TimerDataViewModel @AssistedInject constructor(
     }
 
     /**
-     * Переключение видимости диалога переименования таймера.
+     * Переключает видимость диалога переименования секундомера.
+     *
+     * @param isShowed Флаг, указывающий, должен ли диалог отображаться.
      */
     private fun toggleShowingRenamingDialog(isShowed: Boolean) {
         _state.update {
