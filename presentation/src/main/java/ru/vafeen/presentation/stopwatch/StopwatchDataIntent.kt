@@ -19,10 +19,11 @@ internal sealed class StopwatchDataIntent {
      * Интент для удаления секундомера.
      */
     data object Delete : StopwatchDataIntent()
+
     /**
      * Интент для переключения видимости диалога переименования секундомера.
      */
-    data object ToggleShowingRenamingDialog : StopwatchDataIntent()
+    data class ToggleShowingRenamingDialog(val isShowed: Boolean) : StopwatchDataIntent()
 
     /**
      * Интент для сохранения измененного нахвания секундомера

@@ -58,11 +58,14 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
                 NewStopwatchDataIntent.Toggle -> toggle()
                 NewStopwatchDataIntent.Reset -> makeSthAndUpdate(sth = stopwatchManager::reset)
                 NewStopwatchDataIntent.Delete -> delete()
-                NewStopwatchDataIntent.ToggleShowingRenamingDialog -> toggleShowingRenamingDialog()
+                is NewStopwatchDataIntent.ToggleShowingRenamingDialog ->
+                    toggleShowingRenamingDialog(intent.isShowed)
+
                 is NewStopwatchDataIntent.SaveRenaming -> saveRenaming(intent.newName)
             }
         }
     }
+
     /**
      * Сохранение нового имени для секундомера.
      * Если уже сохранен в бд, то обновление там, если нет, только на UI.
@@ -83,9 +86,9 @@ internal class NewStopwatchDataViewModel @AssistedInject constructor(
     /**
      * Переключение видимости диалога переименования секундомера.
      */
-    private fun toggleShowingRenamingDialog() {
+    private fun toggleShowingRenamingDialog(isShowed: Boolean) {
         _state.update {
-            it.copy(isRenameDialogShowed = !it.isRenameDialogShowed)
+            it.copy(isRenameDialogShowed = isShowed)
         }
     }
 

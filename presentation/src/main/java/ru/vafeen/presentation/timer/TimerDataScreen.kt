@@ -21,12 +21,13 @@ internal fun TimerDataScreen(
     sendRootIntent: (NavRootIntent) -> Unit,
     timerData: Screen.TimerData
 ) {
-    val viewModel: TimerDataViewModel = hiltViewModel<TimerDataViewModel, TimerDataViewModel.Factory> { factory ->
-        factory.create(
-            id = timerData.id,
-            sendRootIntent = sendRootIntent
-        )
-    }
+    val viewModel: TimerDataViewModel =
+        hiltViewModel<TimerDataViewModel, TimerDataViewModel.Factory> { factory ->
+            factory.create(
+                id = timerData.id,
+                sendRootIntent = sendRootIntent
+            )
+        }
 
     val state: TimerDataState by viewModel.state.collectAsState()
     state.timer?.let { timer ->
@@ -40,13 +41,13 @@ internal fun TimerDataScreen(
             renamingDialogValue = timer.name,
             isRenamingDialogShowed = state.isRenameDialogShowed,
             onRenameDialogShow = {
-                viewModel.handleIntent(TimerDataIntent.ToggleShowingRenamingDialog)
+                viewModel.handleIntent(TimerDataIntent.ToggleShowingRenamingDialog(isShowed = true))
             },
             onDismissRequest = {
-                viewModel.handleIntent(TimerDataIntent.ToggleShowingRenamingDialog)
+                viewModel.handleIntent(TimerDataIntent.ToggleShowingRenamingDialog(isShowed = false))
             },
             onSaveRenaming = {
-                viewModel.handleIntent(TimerDataIntent.SaveRenaming(it))
+                viewModel.handleIntent(TimerDataIntent.SaveRenaming(newName = it))
             }
         )
     }

@@ -43,13 +43,13 @@ internal fun StopwatchDataScreen(
             renamingDialogValue = stopwatch.name,
             isRenamingDialogShowed = state.isRenameDialogShowed,
             onRenameDialogShow = {
-                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog)
+                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog(isShowed = true))
             },
             onDismissRequest = {
-                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog)
+                viewModel.handleIntent(StopwatchDataIntent.ToggleShowingRenamingDialog(isShowed = false))
             },
             onSaveRenaming = {
-                viewModel.handleIntent(StopwatchDataIntent.SaveRenaming(it))
+                viewModel.handleIntent(StopwatchDataIntent.SaveRenaming(newName = it))
             }
         )
     }

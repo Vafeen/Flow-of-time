@@ -57,7 +57,7 @@ internal class TimerDataViewModel @AssistedInject constructor(
                 TimerDataIntent.Reset -> makeSthAndUpdate(sth = timerManager::reset)
                 TimerDataIntent.Delete -> delete()
                 is TimerDataIntent.SaveRenaming -> saveRenaming(intent.newName)
-                TimerDataIntent.ToggleShowingRenamingDialog -> toggleShowingRenamingDialog()
+                is TimerDataIntent.ToggleShowingRenamingDialog -> toggleShowingRenamingDialog(intent.isShowed)
             }
         }
     }
@@ -75,9 +75,9 @@ internal class TimerDataViewModel @AssistedInject constructor(
     /**
      * Переключение видимости диалога переименования таймера.
      */
-    private fun toggleShowingRenamingDialog() {
+    private fun toggleShowingRenamingDialog(isShowed: Boolean) {
         _state.update {
-            it.copy(isRenameDialogShowed = !it.isRenameDialogShowed)
+            it.copy(isRenameDialogShowed = isShowed)
         }
     }
 

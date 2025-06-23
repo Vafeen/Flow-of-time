@@ -28,7 +28,7 @@ internal sealed class NewStopwatchDataIntent {
     /**
      * Интент для переключения видимости диалога переименования секундомера.
      */
-    data object ToggleShowingRenamingDialog : NewStopwatchDataIntent()
+    data class ToggleShowingRenamingDialog(val isShowed: Boolean) : NewStopwatchDataIntent()
 
     /**
      * Интент для сохранения измененного нахвания секундомера

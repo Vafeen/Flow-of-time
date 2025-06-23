@@ -42,14 +42,14 @@ internal fun NewTimerDataScreen(sendRootIntent: (NavRootIntent) -> Unit) {
         isAddedToDb = state.isAddedToDb,
         renamingDialogValue = state.timer.name,
         onRenameDialogShow = {
-            viewModel.handleIntent(NewTimerDataIntent.ToggleShowingRenamingDialog)
+            viewModel.handleIntent(NewTimerDataIntent.ToggleShowingRenamingDialog(isShowed = true))
         },
         isRenamingDialogShowed = state.isRenameDialogShowed,
         onDismissRequest = {
-            viewModel.handleIntent(NewTimerDataIntent.ToggleShowingRenamingDialog)
+            viewModel.handleIntent(NewTimerDataIntent.ToggleShowingRenamingDialog(isShowed = false))
         },
         onSaveRenaming = {
-            viewModel.handleIntent(NewTimerDataIntent.SaveRenaming(it))
+            viewModel.handleIntent(NewTimerDataIntent.SaveRenaming(newName = it))
         }
     )
 }

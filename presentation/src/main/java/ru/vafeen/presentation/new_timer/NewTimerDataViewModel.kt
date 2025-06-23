@@ -60,7 +60,9 @@ internal class NewTimerDataViewModel @AssistedInject constructor(
                 NewTimerDataIntent.Toggle -> makeSthAndUpdate(timerManager::toggle)
                 NewTimerDataIntent.Reset -> makeSthAndUpdate(timerManager::reset)
                 NewTimerDataIntent.Delete -> delete()
-                NewTimerDataIntent.ToggleShowingRenamingDialog -> toggleShowingRenamingDialog()
+                is NewTimerDataIntent.ToggleShowingRenamingDialog ->
+                    toggleShowingRenamingDialog(intent.isShowed)
+
                 is NewTimerDataIntent.SaveRenaming -> saveRenaming(intent.newName)
             }
         }
@@ -88,9 +90,9 @@ internal class NewTimerDataViewModel @AssistedInject constructor(
      * Переключает отображение диалога переименования таймера.
      * Если диалог открыт — закрывает, если закрыт — открывает.
      */
-    private fun toggleShowingRenamingDialog() {
+    private fun toggleShowingRenamingDialog(isShowed: Boolean) {
         _state.update {
-            it.copy(isRenameDialogShowed = !it.isRenameDialogShowed)
+            it.copy(isRenameDialogShowed = isShowed)
         }
     }
 

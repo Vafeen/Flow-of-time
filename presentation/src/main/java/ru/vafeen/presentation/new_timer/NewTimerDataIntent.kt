@@ -28,7 +28,7 @@ internal sealed class NewTimerDataIntent {
     /**
      * Интент для переключения видимости диалога переименования таймера.
      */
-    data object ToggleShowingRenamingDialog : NewTimerDataIntent()
+    data class ToggleShowingRenamingDialog(val isShowed: Boolean) : NewTimerDataIntent()
 
     /**
      * Интент для сохранения измененного названия таймера
